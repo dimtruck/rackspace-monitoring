@@ -230,7 +230,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def _to_check_type(self, obj, value_dict):
-        return CheckType(id=obj['key'],
+        return CheckType(id=obj['id'],
                          fields=obj.get('fields', []),
                          is_remote=obj.get('type') == 'remote')
 
@@ -248,7 +248,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._to_alarm(resp.object, {'entity_id': entityId})
 
     def _to_alarm(self, alarm, value_dict):
-        return Alarm(id=alarm['key'], type=alarm['check_type'],
+        return Alarm(id=alarm['id'], type=alarm['check_type'],
             criteria=alarm['criteria'], notification_plan_id=alarm['notification_plan_id'],
             driver=self, entity_id=value_dict['entity_id'])
 
@@ -303,7 +303,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def _to_notification(self, noticiation, value_dict):
-        return Notification(id=noticiation['key'], type=noticiation['type'], details=noticiation['details'], driver=self)
+        return Notification(id=noticiation['id'], type=noticiation['type'], details=noticiation['details'], driver=self)
 
     def _read_notification(self, notificationId):
         resp = self.connection.request("/notifications/%s" % (notificationId))
@@ -339,7 +339,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         error_state = notification_plan.get('error_state', [])
         warning_state = notification_plan.get('warning_state', [])
         ok_state = notification_plan.get('ok_state', [])
-        return NotificationPlan(id=notification_plan['key'], name=notification_plan['name'],
+        return NotificationPlan(id=notification_plan['id'], name=notification_plan['name'],
             error_state=error_state, warning_state=warning_state, ok_state=ok_state,
             driver=self)
 
@@ -388,7 +388,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _to_check(self, obj, value_dict):
         return Check(**{
-            'id': obj['key'],
+            'id': obj['id'],
             'name': obj.get('label'),
             'timeout': obj['timeout'],
             'period': obj['period'],
@@ -453,7 +453,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         ipaddrs = entity.get('ip_addresses', {})
         for key in ipaddrs.keys():
             ips.append((key, ipaddrs[key]))
-        return Entity(id=entity['key'], name=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
+        return Entity(id=entity['id'], name=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
 
     def delete_entity(self, entity):
         resp = self.connection.request("/entities/%s" % (entity.id),
