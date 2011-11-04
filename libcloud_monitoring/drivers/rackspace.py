@@ -336,11 +336,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     #######
 
     def _to_notification_plan(self, notification_plan, value_dict):
-        error_state = notification_plan.get('error_state', [])
+        critical_state = notification_plan.get('critical_state', [])
         warning_state = notification_plan.get('warning_state', [])
         ok_state = notification_plan.get('ok_state', [])
         return NotificationPlan(id=notification_plan['id'], name=notification_plan['name'],
-            error_state=error_state, warning_state=warning_state, ok_state=ok_state,
+            critical_state=critical_state, warning_state=warning_state, ok_state=ok_state,
             driver=self)
 
     def _read_notification_plan(self, notificationPlanId):
@@ -359,7 +359,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def update_notification_plan(self, notification_plan):
         data = {'name': notification_plan.name,
-                'error_state': notification_plan.error_state,
+                'critical_state': notification_plan.critical_state,
                 'warning_state': notification_plan.warning_state,
                 'ok_state': notification_plan.ok_state
                 }
@@ -372,7 +372,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def create_notification_plan(self, **kwargs):
         data = {'name': kwargs.get('name'),
-                'error_state': kwargs.get('error_state', []),
+                'critical_state': kwargs.get('critical_state', []),
                 'warning_state': kwargs.get('warning_state', []),
                 'ok_state': kwargs.get('ok_state', []),
                 }

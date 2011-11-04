@@ -75,10 +75,10 @@ class NotificationPlan(object):
     """
     Represents a notification plan.
     """
-    def __init__(self, id, name, driver, error_state=None, warning_state=None, ok_state=None):
+    def __init__(self, id, name, driver, critical_state=None, warning_state=None, ok_state=None):
         self.id = id
         self.name = name
-        self.error_state = error_state
+        self.critical_state = critical_state
         self.warning_state = warning_state
         self.ok_state = ok_state
         self.driver = driver
