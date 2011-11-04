@@ -339,7 +339,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         critical_state = notification_plan.get('critical_state', [])
         warning_state = notification_plan.get('warning_state', [])
         ok_state = notification_plan.get('ok_state', [])
-        return NotificationPlan(id=notification_plan['id'], name=notification_plan['name'],
+        return NotificationPlan(id=notification_plan['id'], label=notification_plan['label'],
             critical_state=critical_state, warning_state=warning_state, ok_state=ok_state,
             driver=self)
 
@@ -358,7 +358,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def update_notification_plan(self, notification_plan):
-        data = {'name': notification_plan.name,
+        data = {'label': notification_plan.label,
                 'critical_state': notification_plan.critical_state,
                 'warning_state': notification_plan.warning_state,
                 'ok_state': notification_plan.ok_state
@@ -371,7 +371,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._read_notification_plan(notification_plan.id)
 
     def create_notification_plan(self, **kwargs):
-        data = {'name': kwargs.get('name'),
+        data = {'label': kwargs.get('label'),
                 'critical_state': kwargs.get('critical_state', []),
                 'warning_state': kwargs.get('warning_state', []),
                 'ok_state': kwargs.get('ok_state', []),
@@ -389,7 +389,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_check(self, obj, value_dict):
         return Check(**{
             'id': obj['id'],
-            'name': obj.get('label'),
+            'label': obj.get('label'),
             'timeout': obj['timeout'],
             'period': obj['period'],
             'monitoring_zones': obj['monitoring_zones_poll'],
@@ -411,7 +411,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _check_kwarg_to_data(self, kwargs):
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
-                'label': kwargs.get('name'),
+                'label': kwargs.get('label'),
                 'timeout': kwargs.get('timeout', 29),
                 'period': kwargs.get('period', 30),
                 "monitoring_zones_poll": kwargs.get('monitoring_zones', []),
@@ -453,7 +453,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         ipaddrs = entity.get('ip_addresses', {})
         for key in ipaddrs.keys():
             ips.append((key, ipaddrs[key]))
-        return Entity(id=entity['id'], name=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
+        return Entity(id=entity['id'], label=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
 
     def delete_entity(self, entity):
         resp = self.connection.request("/entities/%s" % (entity.id),
@@ -472,7 +472,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
                 'ip_addresses': kwargs.get('ip_addresses', {}),
-                'label': kwargs.get('name'),
+                'label': kwargs.get('label'),
                 'metadata': kwargs.get('extra', {})}
 
         return self._create("/entities", data=data, coerce=self._read_entity)

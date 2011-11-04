@@ -30,10 +30,10 @@ class Entity(object):
     Represents an entity to be monitored.
     """
 
-    def __init__(self, id, name, ip_addresses, driver, extra=None):
+    def __init__(self, id, label, ip_addresses, driver, extra=None):
         """
-        @type name: C{str}
-        @param name: Object name (must be unique per container).
+        @type label: C{str}
+        @param label: Object label (must be unique per container).
 
         @type extra: C{dict}
         @param extra: Extra attributes.
@@ -45,7 +45,7 @@ class Entity(object):
         @param driver: StorageDriver instance.
         """
         self.id = id
-        self.name = name
+        self.label = label
         self.extra = extra or {}
         self.ip_addresses = ip_addresses or []
         self.driver = driver
@@ -54,8 +54,8 @@ class Entity(object):
         return self.driver.delete_entity(self)
 
     def __repr__(self):
-        return ('<Object: id=%s name=%s provider=%s ...>' %
-                (self.id, self.name, self.driver.name))
+        return ('<Object: id=%s label=%s provider=%s ...>' %
+                (self.id, self.label, self.driver.name))
 
 
 class Notification(object):
@@ -75,9 +75,9 @@ class NotificationPlan(object):
     """
     Represents a notification plan.
     """
-    def __init__(self, id, name, driver, critical_state=None, warning_state=None, ok_state=None):
+    def __init__(self, id, label, driver, critical_state=None, warning_state=None, ok_state=None):
         self.id = id
-        self.name = name
+        self.label = label
         self.critical_state = critical_state
         self.warning_state = warning_state
         self.ok_state = ok_state
@@ -115,9 +115,9 @@ class Alarm(object):
         return ('<Alarm: id=%s ...>' % (self.id))
 
 class Check(object):
-    def __init__(self, id, name, timeout, period, monitoring_zones, target_alias, target_resolver, type, details, entity_id, driver):
+    def __init__(self, id, label, timeout, period, monitoring_zones, target_alias, target_resolver, type, details, entity_id, driver):
         self.id = id
-        self.name = name
+        self.label = label
         self.timeout = timeout
         self.period = period
         self.monitoring_zones = monitoring_zones
@@ -129,7 +129,7 @@ class Check(object):
         self.driver = driver
 
     def __repr__(self):
-        return ('<Check: id=%s name=%s...>' % (self.id, self.name))
+        return ('<Check: id=%s label=%s...>' % (self.id, self.label))
 
     def delete(self):
         return self.driver.delete_check(self)
