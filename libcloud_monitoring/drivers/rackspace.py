@@ -15,28 +15,40 @@
 
 import httplib
 import urlparse
-import os.path
-import urllib
 
 try:
     import simplejson as json
 except:
     import json
 
-from libcloud import utils
 from libcloud.common.types import MalformedResponseError, LibcloudError
 from libcloud.common.types import LazyList
 from libcloud.common.base import Response
 
-from libcloud_monitoring.providers import Provider
+from libcloud.monitoring.providers import Provider
 
-from libcloud_monitoring.base import MonitoringDriver, Entity, NotificationPlan, \
+from libcloud.monitoring.base import MonitoringDriver, Entity, NotificationPlan, \
                                      Notification, CheckType, Alarm, Check
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
 
-API_VERSION = '1.0'
+API_VERSION = '1.1'
+
+class RackspaceMonitoringValidationError(LibcloudError):
+
+    def __init__(self, code, type, message, details, driver):
+        self.code = code
+        self.type = type
+        self.message = message
+        self.details = details
+        super(RackspaceMonitoringValidationError, self).__init__(value=message,
+                                                                 driver=driver)
+
+    def __str__(self):
+        string = '<ValidationError type=%s, ' % (self.type)
+        string += 'message="%s", details=%s>' % (self.message, self.details)
+        return string
 
 class RackspaceMonitoringResponse(Response):
 
@@ -74,6 +86,18 @@ class RackspaceMonitoringResponse(Response):
             data = self.body
 
         return data
+
+    def parse_error(self):
+        body = self.parse_body()
+        if self.status == httplib.BAD_REQUEST:
+            error = RackspaceMonitoringValidationError(message=body['message'],
+                                                       code=body['code'],
+                                                       type=body['type'],
+                                                       details=body['details'],
+                                                       driver=self.connection.driver)
+            raise error
+
+        return body
 
 
 class RackspaceMonitoringConnection(OpenStackBaseConnection):
@@ -221,7 +245,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             objIds = self._url_to_obj_ids(location)
             return coerce(**objIds)
         else:
-            raise LibcloudError('Unexpected status code: %s' % (response.status))
+            raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
     def list_check_types(self):
         value_dict = { 'url': '/check_types',
@@ -268,8 +292,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             method='DELETE')
         return resp.status == httplib.NO_CONTENT
 
-    def update_alarm(self, alarm):
-        data = {'check_type': alarms.check_type,
+    def update_alarm(self, entity, alarm):
+        data = {'check_type': alarm.check_type,
                 'criteria': alarm.criteria,
                 'notification_plan_id': alarm.notification_plan_id }
         return self._update("/entities/%s/alarms/%s" % (alarm.entity_id, alarm.id),
@@ -319,7 +343,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return resp.status == httplib.NO_CONTENT
 
     def update_notification(self, notification):
-        data = {'type': notifications.type,
+        data = {'type': notification.type,
                 'details': notification.details }
 
         return self._update("/notifications/%s" % (notification.id),
@@ -440,6 +464,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._create("/entities/%s/checks" % (entity.id),
             data=data, coerce=self._read_check)
 
+    def delete_check(self, check):
+        resp = self.connection.request("/entities/%s/checks/%s" %
+                                       (check.entity_id, check.id),
+                                       method='DELETE')
+        return resp.status == httplib.NO_CONTENT
+
     #######
     ## Entity
     #######
@@ -453,11 +483,24 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         ipaddrs = entity.get('ip_addresses', {})
         for key in ipaddrs.keys():
             ips.append((key, ipaddrs[key]))
-        return Entity(id=entity['id'], label=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
+        return Entity(id=entity['id'], name=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
 
-    def delete_entity(self, entity):
-        resp = self.connection.request("/entities/%s" % (entity.id),
-                                       method='DELETE')
+    def delete_entity(self, entity, ex_delete_children=False):
+        try:
+            resp = self.connection.request("/entities/%s" % (entity.id),
+                                           method='DELETE')
+        except RackspaceMonitoringValidationError, e:
+            type = e.details['type']
+            if not ex_delete_children or e.type != 'childrenExistError':
+                raise e
+
+            if type == 'Check':
+                self.ex_delete_checks(entity=entity)
+            elif type == 'Alarm':
+                self.ex_delete_alarms(entity=entity)
+
+            return self.delete_entity(entity=entity, ex_delete_children=True)
+
         return resp.status == httplib.NO_CONTENT
 
     def list_entities(self, ex_next_marker=None):
@@ -502,3 +545,18 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         data = { 'criteria': criteria, 'check_data': check_data }
         result = self.test_alarm(entity=entity, **data)
         return result
+
+    # Extension methods
+    def ex_delete_checks(self, entity):
+        # Delete all Checks for an entity
+        checks = self.list_checks(entity=entity)
+        for check in checks:
+            self.delete_check(check=check)
+
+    def ex_delete_alarms(self, entity):
+        # Delete all Alarms for an entity
+        alarms = self.list_alarms(entity=entity)
+        for alarm in alarms:
+            self.delete_alarm(alarm=alarm)
+
+
