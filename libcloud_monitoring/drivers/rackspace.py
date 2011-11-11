@@ -25,15 +25,15 @@ from libcloud.common.types import MalformedResponseError, LibcloudError
 from libcloud.common.types import LazyList
 from libcloud.common.base import Response
 
-from libcloud.monitoring.providers import Provider
+from libcloud_monitoring.providers import Provider
 
-from libcloud.monitoring.base import MonitoringDriver, Entity, NotificationPlan, \
+from libcloud_monitoring.base import MonitoringDriver, Entity, NotificationPlan, \
                                      Notification, CheckType, Alarm, Check
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
 
-API_VERSION = '1.1'
+API_VERSION = '1.0'
 
 class RackspaceMonitoringValidationError(LibcloudError):
 
