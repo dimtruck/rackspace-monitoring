@@ -114,7 +114,8 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
         self.api_version = API_VERSION
         self.monitoring_url = ex_force_base_url
         self.accept_format = 'application/json'
-        super(RackspaceMonitoringConnection, self).__init__(user_id, key, secure=secure, ex_force_base_url=None)
+        super(RackspaceMonitoringConnection, self).__init__(user_id, key,
+                secure=secure, ex_force_base_url=ex_force_base_url)
 
     def request(self, action, params=None, data='', headers=None, method='GET',
                 raw=False):
