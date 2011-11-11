@@ -483,7 +483,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         ipaddrs = entity.get('ip_addresses', {})
         for key in ipaddrs.keys():
             ips.append((key, ipaddrs[key]))
-        return Entity(id=entity['id'], name=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
+        return Entity(id=entity['id'], label=entity['label'], extra=entity['metadata'], driver=self, ip_addresses = ips)
 
     def delete_entity(self, entity, ex_delete_children=False):
         try:
