@@ -560,4 +560,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         for alarm in alarms:
             self.delete_alarm(alarm=alarm)
 
-
+    def ex_limits(self):
+        resp = self.connection.request('/limits',
+                                       method='GET')
+        return resp.object
