@@ -23,18 +23,15 @@ from glob import glob
 from subprocess import call
 from os.path import splitext, basename, join as pjoin
 
-import libcloud.utils
-libcloud.utils.SHOW_DEPRECATION_WARNING = False
 
-
-HTML_VIEWSOURCE_BASE = 'https://svn.apache.org/viewvc/libcloud/trunk'
-PROJECT_BASE_DIR = 'http://libcloud.apache.org'
+HTML_VIEWSOURCE_BASE = 'https://github.com/racker/libcloud-monitoring'
+PROJECT_BASE_DIR = ''
 TEST_PATHS = ['test']
 
 def read_version_string():
     version = None
     sys.path.insert(0, pjoin(os.getcwd()))
-    from libcloud import __version__
+    from libcloud_monitoring import __version__
     version = __version__
     sys.path.pop(0)
     return version
@@ -149,8 +146,8 @@ class ApiDocsCommand(Command):
     def run(self):
         os.system(
             'pydoctor'
-            ' --add-package=libcloud'
-            ' --project-name=libcloud'
+            ' --add-package=libcloud_monitoring'
+            ' --project-name="Libcloud Monitoring"'
             ' --make-html'
             ' --html-viewsource-base="%s"'
             ' --project-base-dir=`pwd`'
@@ -189,7 +186,7 @@ setup(
     description='A unified interface into many cloud server providers',
     author='Apache Software Foundation',
     author_email='dev@libcloud.apache.org',
-    requires=([], ['ssl', 'simplejson'],)[pre_python26],
+    requires=(['apache_libcloud(>=0.6.0)']),
     packages=[
         'libcloud_monitoring',
         'libcloud_monitoring.drivers',
