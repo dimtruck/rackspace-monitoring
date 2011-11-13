@@ -100,9 +100,6 @@ class TestCommand(Command):
 
         tests = TestLoader().loadTestsFromNames(testfiles)
 
-        for test_module in DOC_TEST_MODULES:
-            tests.addTests(doctest.DocTestSuite(test_module))
-
         t = TextTestRunner(verbosity = 2)
         res = t.run(tests)
         return not res.wasSuccessful()
@@ -128,7 +125,7 @@ class Pep8Command(Command):
             sys.exit(1)
 
         cwd = os.getcwd()
-        retcode = call(('pep8 %s/libcloud/ %s/test/' %
+        retcode = call(('pep8 %s/libcloud_monitoring/ %s/test/' %
                 (cwd, cwd)).split(' '))
         sys.exit(retcode)
 
