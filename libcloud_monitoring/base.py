@@ -134,6 +134,19 @@ class Check(object):
     def delete(self):
         return self.driver.delete_check(self)
 
+class AlarmChangelog(object):
+
+  def __init__(self, id, alarm_id, entity_id, check_id, state):
+    self.id = id
+    self.alarm_id = alarm_id
+    self.entity_id = entity_id
+    self.check_id = check_id
+    self.state = state
+
+  def __repr__(self):
+        return ('<AlarmChangelog: id=%s alarm_id=%s, state=%s...>' % (
+          self.id, self.alarm_id, self.state))
+
 class MonitoringDriver(object):
     """
     A base MonitoringDriver to derive from.
