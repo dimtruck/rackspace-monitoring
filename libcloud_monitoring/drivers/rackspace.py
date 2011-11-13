@@ -28,7 +28,8 @@ from libcloud.common.base import Response
 from libcloud_monitoring.providers import Provider
 
 from libcloud_monitoring.base import MonitoringDriver, Entity, NotificationPlan, \
-                                     Notification, CheckType, Alarm, Check
+                                     Notification, CheckType, Alarm, Check, \
+                                     AlarmChangelog
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -284,6 +285,21 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                        'entity_id': entity.id}
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def list_alarm_changelog(self, ex_next_marker=None):
+        value_dict = { 'url': '/changelogs/alarms',
+                       'start_marker': ex_next_marker,
+                       'list_item_mapper': self._to_alarm_changelog}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def _to_alarm_changelog(self, values, value_dict):
+        alarm_changelog = AlarmChangelog(id=values['id'],
+                                         alarm_id=values['alarm_id'],
+                                         entity_id=values['entity_id'],
+                                         check_id=values['check_id'],
+                                         state=values['state'])
+        return alarm_changelog
 
     def get_alarm(self, entity, alarm):
         return self._read_alarm(entity.id, alarm.id)
