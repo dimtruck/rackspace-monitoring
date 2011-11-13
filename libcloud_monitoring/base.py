@@ -16,14 +16,8 @@
 # Backward compatibility for Python 2.5
 from __future__ import with_statement
 
-import os
-import os.path                          # pylint: disable-msg=W0404
-import hashlib
-from os.path import join as pjoin
-
-from libcloud import utils
 from libcloud.common.base import ConnectionUserAndKey
-from libcloud.common.types import LibcloudError
+
 
 class Entity(object):
     """
@@ -71,11 +65,13 @@ class Notification(object):
     def __repr__(self):
         return ('<Notification: id=%s type=%s ...>' % (self.id, self.type))
 
+
 class NotificationPlan(object):
     """
     Represents a notification plan.
     """
-    def __init__(self, id, label, driver, critical_state=None, warning_state=None, ok_state=None):
+    def __init__(self, id, label, driver, critical_state=None,
+                 warning_state=None, ok_state=None):
         self.id = id
         self.label = label
         self.critical_state = critical_state
@@ -89,6 +85,7 @@ class NotificationPlan(object):
     def __repr__(self):
         return ('<NotificationPlan: id=%s...>' % (self.id))
 
+
 class CheckType(object):
     def __init__(self, id, fields, is_remote):
         self.id = id
@@ -100,7 +97,8 @@ class CheckType(object):
 
 
 class Alarm(object):
-    def __init__(self, id, type, criteria, driver, entity_id, notification_plan_id=None):
+    def __init__(self, id, type, criteria, driver, entity_id,
+                 notification_plan_id=None):
         self.id = id
         self.type = type
         self.criteria = criteria
@@ -114,8 +112,11 @@ class Alarm(object):
     def __repr__(self):
         return ('<Alarm: id=%s ...>' % (self.id))
 
+
 class Check(object):
-    def __init__(self, id, label, timeout, period, monitoring_zones, target_alias, target_resolver, type, details, entity_id, driver):
+    def __init__(self, id, label, timeout, period, monitoring_zones,
+                 target_alias, target_resolver, type, details,
+                 entity_id, driver):
         self.id = id
         self.label = label
         self.timeout = timeout
@@ -134,18 +135,20 @@ class Check(object):
     def delete(self):
         return self.driver.delete_check(self)
 
+
 class AlarmChangelog(object):
 
-  def __init__(self, id, alarm_id, entity_id, check_id, state):
-    self.id = id
-    self.alarm_id = alarm_id
-    self.entity_id = entity_id
-    self.check_id = check_id
-    self.state = state
+    def __init__(self, id, alarm_id, entity_id, check_id, state):
+        self.id = id
+        self.alarm_id = alarm_id
+        self.entity_id = entity_id
+        self.check_id = check_id
+        self.state = state
 
-  def __repr__(self):
+    def __repr__(self):
         return ('<AlarmChangelog: id=%s alarm_id=%s, state=%s...>' % (
           self.id, self.alarm_id, self.state))
+
 
 class MonitoringDriver(object):
     """
@@ -172,7 +175,8 @@ class MonitoringDriver(object):
         if port != None:
             args.append(port)
 
-        self.connection = self.connectionCls(*args, **self._ex_connection_class_kwargs())
+        self.connection = self.connectionCls(*args,
+                                         **self._ex_connection_class_kwargs())
 
         self.connection.driver = self
         self.connection.connect()
