@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from libcloud.common.types import LibcloudError
-
 __all__ = ['Provider']
+
 
 class Provider(object):
     """
@@ -26,4 +25,3 @@ class Provider(object):
     """
     DUMMY = 0
     RACKSPACE = 1
-
