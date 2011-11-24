@@ -157,6 +157,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         self._ex_force_base_url = kwargs.pop('ex_force_base_url', None)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
+        # TODO: Change before beta / public release
+        self.connection._populate_hosts_and_request_paths()
+        tenant_id = self.connection.tenant_ids['compute']
+        self.connection._force_base_url = '%s/%s' % (
+                self.connection._force_base_url, tenant_id)
+
     def _ex_connection_class_kwargs(self):
         if self._ex_force_base_url:
             return {'ex_force_base_url': self._ex_force_base_url}
