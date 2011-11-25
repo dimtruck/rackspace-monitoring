@@ -54,6 +54,20 @@ class RackspaceMonitoringValidationError(LibcloudError):
         return string
 
 
+class LatestAlarmState(object):
+    def __init__(self, entity_id, check_id, alarm_id, timestamp, state):
+        self.entity_id = entity_id
+        self.check_id = check_id
+        self.alarm_id = alarm_id
+        self.timestamp = timestamp
+        self.state = state
+
+    def __repr__(self):
+        return ('<LatestAlarmState: entity_id=%s, check_id=%s, alarm_id=%s, '
+                'state=%s ...>' %
+                (self.entity_id, self.check_id, self.alarm_id, self.state))
+
+
 class RackspaceMonitoringResponse(Response):
 
     valid_response_codes = [httplib.NOT_FOUND, httplib.CONFLICT]
@@ -198,7 +212,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             m = resp['metadata'].get('next_marker')
             return l, m, m == None
 
-        raise LibcloudError('Unexpected status code: %s' % (response.status))
+        raise LibcloudError('Unexpected status code: %s (url=%s)' %
+                            (response.status, value_dict['url']))
 
     def _plural_to_singular(self, name):
         kv = {'entities': 'entity',
@@ -587,6 +602,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return result
 
     # Extension methods
+
     def ex_delete_checks(self, entity):
         # Delete all Checks for an entity
         checks = self.list_checks(entity=entity)
@@ -603,3 +619,30 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         resp = self.connection.request('/limits',
                                        method='GET')
         return resp.object
+
+    def ex_views_overview(self, ex_next_marker=None):
+        value_dict = {'url': '/views/overview',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_overview_obj}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def _to_latest_alarm_state(self, obj, value_dict):
+        return LatestAlarmState(entity_id=obj['entity_id'],
+                check_id=obj['check_id'], alarm_id=obj['alarm_id'],
+                timestamp=obj['timestamp'], state=obj['state'])
+
+    def _to_overview_obj(self, data, value_dict):
+        entity = self._to_entity(data['entity'], {})
+
+        child_value_dict = {'entity_id': entity.id}
+        checks = [self._to_check(check, child_value_dict) for check
+                  in data['checks']]
+        alarms = [self._to_alarm(alarm, child_value_dict) for alarm
+                  in data['alarms']]
+        latest_alarm_states = [self._to_latest_alarm_state(item, {}) for item
+                               in data['latest_alarm_states']]
+
+        obj = {'entity': entity, 'checks': checks, 'alarms': alarms,
+               'latest_alarm_states': latest_alarm_states}
+        return obj
