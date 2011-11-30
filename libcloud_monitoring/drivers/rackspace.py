@@ -128,14 +128,14 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
     auth_url = AUTH_URL_US
     _url_key = "monitoring_url"
 
-    def __init__(self, user_id, key, secure=False, ex_force_base_url=None):
+    def __init__(self, user_id, key, secure=False, ex_force_base_url=None, ex_force_auth_url=None):
         self.api_version = API_VERSION
         self.monitoring_url = ex_force_base_url
         self.accept_format = 'application/json'
         super(RackspaceMonitoringConnection, self).__init__(user_id, key,
                                 secure=secure,
                                 ex_force_base_url=ex_force_base_url,
-                                ex_force_auth_url="https://identity.api.rackspacecloud.com/v2.0/",
+                                ex_force_auth_url=ex_force_auth_url,
                                 ex_force_auth_version="2.0")
 
     def request(self, action, params=None, data='', headers=None, method='GET',
@@ -169,6 +169,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def __init__(self, *args, **kwargs):
         self._ex_force_base_url = kwargs.pop('ex_force_base_url', None)
+        self._ex_force_auth_url = kwargs.pop('ex_force_auth_url', None)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
         # TODO: Change before beta / public release
@@ -178,9 +179,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 self.connection._force_base_url, tenant_id)
 
     def _ex_connection_class_kwargs(self):
+        rv = {}
         if self._ex_force_base_url:
-            return {'ex_force_base_url': self._ex_force_base_url}
-        return {}
+            rv['ex_force_base_url'] =  self._ex_force_base_url
+        if self._ex_force_auth_url:
+            rv['ex_force_auth_url'] =  self._ex_force_auth_url
+        return rv
 
     def _get_more(self, last_key, value_dict):
         key = None
