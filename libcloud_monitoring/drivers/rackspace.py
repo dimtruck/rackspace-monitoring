@@ -216,8 +216,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             m = resp['metadata'].get('next_marker')
             return l, m, m == None
 
-        raise LibcloudError('Unexpected status code: %s (url=%s)' %
-                            (response.status, value_dict['url']))
+        body = json.loads(response.body)
+
+        details = body['details'] if 'details' in body else ''
+        raise LibcloudError('Unexpected status code: %s (url=%s, details=%s)' %
+                            (response.status, value_dict['url'], details))
 
     def _plural_to_singular(self, name):
         kv = {'entities': 'entity',
