@@ -308,7 +308,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     #######
     ## Alarms
     #######
-    def _read_alarm(self, entity_id, alarm_id):
+    def get_alarm(self, entity_id, alarm_id):
         url = "/entities/%s/alarms/%s" % (entity_id, alarm_id)
         resp = self.connection.request(url)
         return self._to_alarm(resp.object, {'entity_id': entity_id})
@@ -342,9 +342,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                                          state=values['state'])
         return alarm_changelog
 
-    def get_alarm(self, entity, alarm):
-        return self._read_alarm(entity.id, alarm.id)
-
     def delete_alarm(self, alarm):
         resp = self.connection.request("/entities/%s/alarms/%s" % (
             alarm.entity_id, alarm.id),
@@ -354,7 +351,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def update_alarm(self, alarm, data):
         return self._update("/entities/%s/alarms/%s" % (alarm.entity_id,
                                                         alarm.id),
-            data=data, coerce=self._read_alarm)
+            data=data, coerce=self.get_alarm)
 
     def create_alarm(self, entity, **kwargs):
         data = {'check_type': kwargs.get('check_type'),
@@ -362,7 +359,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'notification_plan_id': kwargs.get('notification_plan_id')}
 
         return self._create("/entities/%s/alarms" % (entity.id),
-            data=data, coerce=self._read_alarm)
+            data=data, coerce=self.get_alarm)
 
     def test_alarm(self, entity, **kwargs):
         data = {'criteria': kwargs.get('criteria'),
@@ -387,13 +384,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Notification(id=noticiation['id'], type=noticiation['type'],
                             details=noticiation['details'], driver=self)
 
-    def _read_notification(self, notification_id):
+    def get_notification(self, notification_id):
         resp = self.connection.request("/notifications/%s" % (notification_id))
 
         return self._to_notification(resp.object, {})
-
-    def get_notification(self, notification):
-        return self._read_notification(notification.id)
 
     def delete_notification(self, notification):
         resp = self.connection.request("/notifications/%s" % (notification.id),
@@ -402,14 +396,14 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def update_notification(self, notification, data):
         return self._update("/notifications/%s" % (notification.id),
-            data=data, coerce=self._read_notification)
+            data=data, coerce=self.get_notification)
 
     def create_notification(self, **kwargs):
         data = {'type': kwargs.get('type'),
                 'details': kwargs.get('details')}
 
         return self._create("/notifications", data=data,
-                            coerce=self._read_notification)
+                            coerce=self.get_notification)
 
     #######
     ## Notification Plan
@@ -424,7 +418,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             critical_state=critical_state, warning_state=warning_state,
             ok_state=ok_state, driver=self)
 
-    def _read_notification_plan(self, notification_plan_id):
+    def get_notification_plan(self, notification_plan_id):
         resp = self.connection.request("/notification_plans/%s" % (
             notification_plan_id))
         return self._to_notification_plan(resp.object, {})
@@ -443,10 +437,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def update_notification_plan(self, notification_plan, data):
         return self._update("/notification_plans/%s" % (notification_plan.id),
             data=data,
-            coerce=self._read_notification_plan)
-
-    def get_notification_plan(self, notification_plan):
-        return self._read_notification_plan(notification_plan.id)
+            coerce=self.get_notification_plan)
 
     def create_notification_plan(self, **kwargs):
         data = {'label': kwargs.get('label'),
@@ -455,13 +446,13 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'ok_state': kwargs.get('ok_state', []),
                 }
         return self._create("/notification_plans", data=data,
-                            coerce=self._read_notification_plan)
+                            coerce=self.get_notification_plan)
 
     #######
     ## Checks
     #######
 
-    def _read_check(self, entity_id, check_id):
+    def get_check(self, entity_id, check_id):
         resp = self.connection.request('/entities/%s/checks/%s' % (entity_id,
                                                                    check_id))
         return self._to_check(resp.object, {'entity_id': entity_id})
@@ -517,12 +508,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def create_check(self, entity, **kwargs):
         data = self._check_kwarg_to_data(kwargs)
         return self._create("/entities/%s/checks" % (entity.id),
-            data=data, coerce=self._read_check)
+            data=data, coerce=self.get_check)
 
     def update_check(self, check, data):
         return self._update("/entities/%s/checks/%s" % (check.entity_id,
                                                         check.id),
-            data=data, coerce=self._read_check)
+            data=data, coerce=self.get_check)
 
     def delete_check(self, check):
         resp = self.connection.request("/entities/%s/checks/%s" %
