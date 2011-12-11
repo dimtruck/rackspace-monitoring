@@ -351,10 +351,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             method='DELETE')
         return resp.status == httplib.NO_CONTENT
 
-    def update_alarm(self, entity, alarm):
-        data = {'check_type': alarm.check_type,
-                'criteria': alarm.criteria,
-                'notification_plan_id': alarm.notification_plan_id}
+    def update_alarm(self, alarm, data):
         return self._update("/entities/%s/alarms/%s" % (alarm.entity_id,
                                                         alarm.id),
             data=data, coerce=self._read_alarm)
@@ -403,10 +400,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                                        method='DELETE')
         return resp.status == httplib.NO_CONTENT
 
-    def update_notification(self, notification):
-        data = {'type': notification.type,
-                'details': notification.details}
-
+    def update_notification(self, notification, data):
         return self._update("/notifications/%s" % (notification.id),
             data=data, coerce=self._read_notification)
 
@@ -446,13 +440,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       'list_item_mapper': self._to_notification_plan}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def update_notification_plan(self, notification_plan):
-        data = {'label': notification_plan.label,
-                'critical_state': notification_plan.critical_state,
-                'warning_state': notification_plan.warning_state,
-                'ok_state': notification_plan.ok_state
-                }
-
+    def update_notification_plan(self, notification_plan, data):
         return self._update("/notification_plans/%s" % (notification_plan.id),
             data=data,
             coerce=self._read_notification_plan)
