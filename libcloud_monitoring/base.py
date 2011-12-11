@@ -62,6 +62,9 @@ class Entity(object):
         self.ip_addresses = ip_addresses or []
         self.driver = driver
 
+    def update(self, data):
+        self.driver.update_entity(entity=self, data=data)
+
     def delete(self):
         return self.driver.delete_entity(self)
 
@@ -76,6 +79,9 @@ class Notification(object):
         self.type = type
         self.details = details
         self.driver = driver
+
+    def update(self, data):
+        self.driver.update_notification(notification=self, data=data)
 
     def delete(self):
         return self.driver.delete_notification(self)
@@ -96,6 +102,9 @@ class NotificationPlan(object):
         self.warning_state = warning_state
         self.ok_state = ok_state
         self.driver = driver
+
+    def update(self, data):
+        self.driver.update_notification_plan(notification_plan=self, data=data)
 
     def delete(self):
         return self.driver.delete_notification_plan(self)
@@ -124,6 +133,9 @@ class Alarm(object):
         self.notification_plan_id = notification_plan_id
         self.entity_id = entity_id
 
+    def update(self, data):
+        self.driver.update_alarm(alarm=self, data=data)
+
     def delete(self):
         return self.driver.delete_alarm(self)
 
@@ -146,6 +158,9 @@ class Check(object):
         self.details = details
         self.entity_id = entity_id
         self.driver = driver
+
+    def update(self, data):
+        self.driver.update_check(check=self, data=data)
 
     def delete(self):
         return self.driver.delete_check(self)
@@ -265,3 +280,23 @@ class MonitoringDriver(object):
     def create_notification_plan(self, **kwargs):
         raise NotImplementedError(
             'create_notification_plan not implemented for this driver')
+
+    def update_entity(self, entity, data):
+        raise NotImplementedError(
+            'update_entity not implemented for this driver')
+
+    def update_check(self, check, data):
+        raise NotImplementedError(
+            'update_check not implemented for this driver')
+
+    def update_alarm(self, alarm, data):
+        raise NotImplementedError(
+            'update_alarm not implemented for this driver')
+
+    def update_notification(self, notification, data):
+        raise NotImplementedError(
+            'update_notification not implemented for this driver')
+
+    def update_notification_plan(self, notification_plan, data):
+        raise NotImplementedError(
+            'update_notification_plan not implemented for this driver')
