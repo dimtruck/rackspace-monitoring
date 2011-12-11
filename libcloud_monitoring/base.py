@@ -48,7 +48,7 @@ class Entity(object):
         return self.driver.delete_entity(self)
 
     def __repr__(self):
-        return ('<Object: id=%s label=%s provider=%s ...>' %
+        return ('<Entity: id=%s label=%s provider=%s ...>' %
                 (self.id, self.label, self.driver.name))
 
 
