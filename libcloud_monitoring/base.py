@@ -129,11 +129,11 @@ class Check(object):
         self.entity_id = entity_id
         self.driver = driver
 
-    def __repr__(self):
-        return ('<Check: id=%s label=%s...>' % (self.id, self.label))
-
     def delete(self):
         return self.driver.delete_check(self)
+
+    def __repr__(self):
+        return ('<Check: id=%s label=%s...>' % (self.id, self.label))
 
 
 class AlarmChangelog(object):
@@ -208,30 +208,42 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'list_notification_plans not implemented for this driver')
 
-    def delete_entity(self):
+    def delete_entity(self, entity):
         raise NotImplementedError(
             'delete_entity not implemented for this driver')
+
+    def delete_check(self, check):
+        raise NotImplementedError(
+            'delete_check not implemented for this driver')
+
+    def delete_alarm(self, check):
+        raise NotImplementedError(
+            'delete_alarm not implemented for this driver')
 
     def delete_notification(self, notification):
         raise NotImplementedError(
             'delete_notification not implemented for this driver')
 
-    def delete_notification_plan(self, notification):
+    def delete_notification_plan(self, notification_plan):
         raise NotImplementedError(
             'delete_notification_plan not implemented for this driver')
 
-    def create_check(self, notification):
+    def create_check(self, **kwargs):
         raise NotImplementedError(
             'create_check not implemented for this driver')
 
-    def create_entity(self, notification):
+    def create_alarm(self, **kwargs):
+        raise NotImplementedError(
+            'create_alarm not implemented for this driver')
+
+    def create_entity(self, **kwargs):
         raise NotImplementedError(
             'create_entity not implemented for this driver')
 
-    def create_notification(self, notification):
+    def create_notification(self, **kwargs):
         raise NotImplementedError(
             'create_notification not implemented for this driver')
 
-    def create_notification_plan(self, notification):
+    def create_notification_plan(self, **kwargs):
         raise NotImplementedError(
             'create_notification_plan not implemented for this driver')
