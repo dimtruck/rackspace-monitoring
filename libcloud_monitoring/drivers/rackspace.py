@@ -381,10 +381,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def _to_notification(self, noticiation, value_dict):
-        return Notification(id=noticiation['id'], label=noticiation['label'],
-                            type=noticiation['type'],
-                            details=noticiation['details'], driver=self)
+    def _to_notification(self, notification, value_dict):
+        return Notification(id=notification['id'], label=notification['label'],
+                            type=notification['type'],
+                            details=notification['details'], driver=self)
 
     def get_notification(self, notification_id):
         resp = self.connection.request("/notifications/%s" % (notification_id))
