@@ -302,10 +302,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     #######
     ## Alarms
     #######
-    def _read_alarm(self, entityId, alarmId):
-        url = "/entities/%s/alarms/%s" % (entityId, alarmId)
+    def _read_alarm(self, entity_id, alarmId):
+        url = "/entities/%s/alarms/%s" % (entity_id, alarmId)
         resp = self.connection.request(url)
-        return self._to_alarm(resp.object, {'entity_id': entityId})
+        return self._to_alarm(resp.object, {'entity_id': entity_id})
 
     def _to_alarm(self, alarm, value_dict):
         return Alarm(id=alarm['id'], type=alarm['check_type'],
@@ -467,10 +467,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     ## Checks
     #######
 
-    def _read_check(self, entityId, checkId):
-        resp = self.connection.request('/entities/%s/checks/%s' % (entityId,
+    def _read_check(self, entity_id, checkId):
+        resp = self.connection.request('/entities/%s/checks/%s' % (entity_id,
                                                                    checkId))
-        return self._to_check(resp.object, {'entity_id': entityId})
+        return self._to_check(resp.object, {'entity_id': entity_id})
 
     def _to_check(self, obj, value_dict):
         return Check(**{
@@ -535,8 +535,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     ## Entity
     #######
 
-    def _read_entity(self, entityId):
-        resp = self.connection.request("/entities/%s" % (entityId))
+    def get_entity(self, entity_id):
+        resp = self.connection.request("/entities/%s" % (entity_id))
         return self._to_entity(resp.object, {})
 
     def _to_entity(self, entity, value_dict):
@@ -580,7 +580,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'label': kwargs.get('label'),
                 'metadata': kwargs.get('extra', {})}
 
-        return self._create("/entities", data=data, coerce=self._read_entity)
+        return self._create("/entities", data=data, coerce=self.get_entity)
 
     def usage(self):
         resp = self.connection.request("/usage")
