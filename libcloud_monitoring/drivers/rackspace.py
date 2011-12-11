@@ -382,7 +382,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def _to_notification(self, noticiation, value_dict):
-        return Notification(id=noticiation['id'], type=noticiation['type'],
+        return Notification(id=noticiation['id'], label=noticiation['label'],
+                            type=noticiation['type'],
                             details=noticiation['details'], driver=self)
 
     def get_notification(self, notification_id):
@@ -400,7 +401,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             data=data, coerce=self.get_notification)
 
     def create_notification(self, **kwargs):
-        data = {'type': kwargs.get('type'),
+        data = {'label': kwargs.get('label'),
+                'type': kwargs.get('type'),
                 'details': kwargs.get('details')}
 
         return self._create("/notifications", data=data,
