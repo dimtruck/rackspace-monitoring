@@ -48,7 +48,7 @@ class RackspaceMonitoringValidationError(LibcloudError):
         super(RackspaceMonitoringValidationError, self).__init__(value=message,
                                                                  driver=driver)
 
-    def __str__(self):
+    def __repr__(self):
         string = '<ValidationError type=%s, ' % (self.type)
         string += 'message="%s", details=%s>' % (self.message, self.details)
         return string
