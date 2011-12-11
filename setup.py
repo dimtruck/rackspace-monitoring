@@ -174,16 +174,13 @@ class CoverageCommand(Command):
         cov.save()
         cov.html_report()
 
-# pre-2.6 will need the ssl PyPI package
-pre_python26 = (sys.version_info[0] == 2 and sys.version_info[1] < 6)
-
 setup(
     name='libcloud-monitoring',
     version=read_version_string(),
-    description='A unified interface into many cloud server providers',
-    author='Apache Software Foundation',
-    author_email='dev@libcloud.apache.org',
-    requires=(['apache_libcloud(>=0.6.0)']),
+    description='Client library for Rackspace Monitoring',
+    author='Rackspace',
+    author_email='',
+    requires=(['apache_libcloud(>=0.7.1)']),
     packages=[
         'libcloud_monitoring',
         'libcloud_monitoring.drivers',
@@ -207,5 +204,5 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules'
-    ],
+    ]
 )
