@@ -70,7 +70,7 @@ class LatestAlarmState(object):
 
 class RackspaceMonitoringResponse(Response):
 
-    valid_response_codes = [httplib.NOT_FOUND, httplib.CONFLICT]
+    valid_response_codes = [httplib.CONFLICT]
 
     def success(self):
         i = int(self.status)
