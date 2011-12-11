@@ -266,6 +266,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
     def _update(self, url, key, data, coerce):
+        # TODO: key is not needed
         for k in data.keys():
             if data[k] == None:
                 del data[k]
@@ -579,7 +580,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def create_entity(self, **kwargs):
-
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
                 'ip_addresses': kwargs.get('ip_addresses', {}),
@@ -587,6 +587,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'metadata': kwargs.get('extra', {})}
 
         return self._create("/entities", data=data, coerce=self.get_entity)
+
+    def update_entity(self, entity, data):
+        return self._update("/entities/%s" % (entity.id),
+            key=entity.id, data=data, coerce=self.get_entity)
 
     def usage(self):
         resp = self.connection.request("/usage")
