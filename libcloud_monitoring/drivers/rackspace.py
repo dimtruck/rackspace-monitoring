@@ -26,6 +26,7 @@ from libcloud.common.types import LazyList
 from libcloud.common.base import Response
 
 from libcloud_monitoring.providers import Provider
+from libcloud_monitoring.utils import to_underscore_separated
 
 from libcloud_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan, MonitoringZone,
@@ -244,6 +245,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         for i in range(0, len(chunks), 2):
             key = self._plural_to_singular(chunks[i]) + '_id'
+            key = to_underscore_separated(key)
             rv[key] = chunks[i + 1]
 
         return rv
