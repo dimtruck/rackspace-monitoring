@@ -519,6 +519,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._create("/entities/%s/checks" % (entity.id),
             data=data, coerce=self._read_check)
 
+    def update_check(self, check, data):
+        return self._update("/entities/%s/checks/%s" % (check.entity_id,
+                                                        check.id),
+            data=data, coerce=self._read_check)
+
     def delete_check(self, check):
         resp = self.connection.request("/entities/%s/checks/%s" %
                                        (check.entity_id, check.id),
