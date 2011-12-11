@@ -355,6 +355,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def create_alarm(self, entity, **kwargs):
         data = {'check_type': kwargs.get('check_type'),
+                'check_id': kwargs.get('check_id'),
                 'criteria': kwargs.get('criteria'),
                 'notification_plan_id': kwargs.get('notification_plan_id')}
 
