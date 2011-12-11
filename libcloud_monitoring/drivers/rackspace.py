@@ -265,8 +265,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
-    def _update(self, url, key, data, coerce):
-        # TODO: key is not needed
+    def _update(self, url, data, coerce):
         for k in data.keys():
             if data[k] == None:
                 del data[k]
@@ -358,7 +357,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'notification_plan_id': alarm.notification_plan_id}
         return self._update("/entities/%s/alarms/%s" % (alarm.entity_id,
                                                         alarm.id),
-            key=alarm.id, data=data, coerce=self._read_alarm)
+            data=data, coerce=self._read_alarm)
 
     def create_alarm(self, entity, **kwargs):
         data = {'check_type': kwargs.get('check_type'),
@@ -409,7 +408,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'details': notification.details}
 
         return self._update("/notifications/%s" % (notification.id),
-            key=notification.id, data=data, coerce=self._read_notification)
+            data=data, coerce=self._read_notification)
 
     def create_notification(self, **kwargs):
         data = {'type': kwargs.get('type'),
@@ -455,7 +454,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 }
 
         return self._update("/notification_plans/%s" % (notification_plan.id),
-            key=notification_plan.id, data=data,
+            data=data,
             coerce=self._read_notification_plan)
 
     def get_notification_plan(self, notification_plan):
@@ -590,7 +589,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def update_entity(self, entity, data):
         return self._update("/entities/%s" % (entity.id),
-            key=entity.id, data=data, coerce=self.get_entity)
+            data=data, coerce=self.get_entity)
 
     def usage(self):
         resp = self.connection.request("/usage")
