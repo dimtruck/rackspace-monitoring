@@ -19,6 +19,24 @@ from __future__ import with_statement
 from libcloud.common.base import ConnectionUserAndKey
 
 
+class MonitoringZone(object):
+    """
+    Represents a location from where the entities are monitored.
+    """
+
+    def __init__(self, id, label, country_code, source_ips, driver, extra=None):
+        self.id = id
+        self.label = label
+        self.country_code = country_code
+        self.source_ips = source_ips
+        self.driver = driver
+        self.extra = extra or {}
+
+    def __repr__(self):
+        return ('<MonitoringZone: id=%s label=%s provider=%s ...>' %
+                (self.id, self.label, self.driver.name))
+
+
 class Entity(object):
     """
     Represents an entity to be monitored.

@@ -28,7 +28,7 @@ from libcloud.common.base import Response
 from libcloud_monitoring.providers import Provider
 
 from libcloud_monitoring.base import (MonitoringDriver, Entity,
-                                      NotificationPlan,
+                                      NotificationPlan, MonitoringZone,
                                       Notification, CheckType, Alarm, Check,
                                       AlarmChangelog)
 
@@ -294,10 +294,16 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                          fields=obj.get('fields', []),
                          is_remote=obj.get('type') == 'remote')
 
+    def _to_monitoring_zone(self, obj, value_dict):
+        return MonitoringZone(id=obj['id'], label=obj['label'],
+                              country_code=obj['country_code'],
+                              source_ips=obj['source_ips'],
+                              driver=self)
+
     def list_monitoring_zones(self):
-        resp = self.connection.request("/monitoring_zones",
-                                       method='GET')
-        return resp.status == httplib.NO_CONTENT
+        value_dict = {'url': '/monitoring_zones',
+                       'list_item_mapper': self._to_monitoring_zone}
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     #######
     ## Alarms
