@@ -243,7 +243,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         chunks = path.split('/')[1:]
 
         for i in range(0, len(chunks), 2):
-            key = self._plural_to_singular(chunks[i]) + "Id"
+            key = self._plural_to_singular(chunks[i]) + '_id'
             rv[key] = chunks[i + 1]
 
         return rv
@@ -260,8 +260,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             location = resp.headers.get('location')
             if not location:
                 raise LibcloudError('Missing location header')
-            objIds = self._url_to_obj_ids(location)
-            return coerce(**objIds)
+            obj_ids = self._url_to_obj_ids(location)
+            return coerce(**obj_ids)
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
@@ -278,8 +278,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             if not location:
                 raise LibcloudError('Missing location header')
 
-            objIds = self._url_to_obj_ids(location)
-            return coerce(**objIds)
+            obj_ids = self._url_to_obj_ids(location)
+            return coerce(**obj_ids)
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
@@ -302,8 +302,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     #######
     ## Alarms
     #######
-    def _read_alarm(self, entity_id, alarmId):
-        url = "/entities/%s/alarms/%s" % (entity_id, alarmId)
+    def _read_alarm(self, entity_id, alarm_id):
+        url = "/entities/%s/alarms/%s" % (entity_id, alarm_id)
         resp = self.connection.request(url)
         return self._to_alarm(resp.object, {'entity_id': entity_id})
 
@@ -384,8 +384,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Notification(id=noticiation['id'], type=noticiation['type'],
                             details=noticiation['details'], driver=self)
 
-    def _read_notification(self, notificationId):
-        resp = self.connection.request("/notifications/%s" % (notificationId))
+    def _read_notification(self, notification_id):
+        resp = self.connection.request("/notifications/%s" % (notification_id))
 
         return self._to_notification(resp.object, {})
 
@@ -424,9 +424,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             critical_state=critical_state, warning_state=warning_state,
             ok_state=ok_state, driver=self)
 
-    def _read_notification_plan(self, notificationPlanId):
+    def _read_notification_plan(self, notification_plan_id):
         resp = self.connection.request("/notification_plans/%s" % (
-            notificationPlanId))
+            notification_plan_id))
         return self._to_notification_plan(resp.object, {})
 
     def delete_notification_plan(self, notification_plan):
@@ -467,9 +467,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     ## Checks
     #######
 
-    def _read_check(self, entity_id, checkId):
+    def _read_check(self, entity_id, check_id):
         resp = self.connection.request('/entities/%s/checks/%s' % (entity_id,
-                                                                   checkId))
+                                                                   check_id))
         return self._to_check(resp.object, {'entity_id': entity_id})
 
     def _to_check(self, obj, value_dict):
