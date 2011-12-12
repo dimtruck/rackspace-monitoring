@@ -31,7 +31,7 @@ from libcloud_monitoring.utils import to_underscore_separated
 from libcloud_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan, MonitoringZone,
                                       Notification, CheckType, Alarm, Check,
-                                      AlarmChangelog)
+                                      NotificationType, AlarmChangelog)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -295,6 +295,16 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return CheckType(id=obj['id'],
                          fields=obj.get('fields', []),
                          is_remote=obj.get('type') == 'remote')
+
+    def list_notification_types(self):
+        value_dict = {'url': '/notification_types',
+                       'list_item_mapper': self._to_notification_type}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def _to_notification_type(self, obj, value_dict):
+        return NotificationType(id=obj['id'],
+                         fields=obj.get('fields', []))
 
     def _to_monitoring_zone(self, obj, value_dict):
         return MonitoringZone(id=obj['id'], label=obj['label'],

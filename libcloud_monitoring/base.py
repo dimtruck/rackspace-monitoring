@@ -125,6 +125,15 @@ class CheckType(object):
         return ('<CheckType: id=%s ...>' % (self.id))
 
 
+class NotificationType(object):
+    def __init__(self, id, fields):
+        self.id = id
+        self.fields = fields
+
+    def __repr__(self):
+        return ('<NotificationType: id=%s ...>' % (self.id))
+
+
 class Alarm(object):
     def __init__(self, id, type, criteria, driver, entity_id,
                  notification_plan_id=None):
