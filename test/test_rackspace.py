@@ -25,11 +25,12 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan,
                                       Notification, CheckType, Alarm, Check,
                                       AlarmChangelog)
-from rackspace_monitoring.drivers.rackspace import RackspaceMonitoringDriver
+from rackspace_monitoring.drivers.rackspace import (RackspaceMonitoringDriver,
+                                                    RackspaceMonitoringValidationError)
 
-from test import MockResponse, MockHttpTestCase, XML_HEADERS
+from test import MockResponse, MockHttpTestCase
 from test.file_fixtures import FIXTURES_ROOT
-from test.file_fixtures import FileFixtures, OpenStackFixtures
+from test.file_fixtures import FileFixtures
 from secrets import RACKSPACE_PARAMS
 
 FIXTURES_ROOT['monitoring'] = pjoin(os.getcwd(), 'test/fixtures')
@@ -59,6 +60,21 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(result[0].id, 'en8B9YwUn6')
         self.assertEqual(result[0].label, 'bar')
 
+    def test_list_checks(self):
+        en = self.driver.list_entities()[0]
+        result = list(self.driver.list_checks(entity=en))
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].label, 'bar')
+        self.assertEqual(result[0].details['url'], 'http://www.foo.com')
+        self.assertEqual(result[0].details['method'], 'GET')
+
+    def test_list_alarms(self):
+        en = self.driver.list_entities()[0]
+        result = list(self.driver.list_alarms(entity=en))
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].type, 'remote.http')
+        self.assertEqual(result[0].notification_plan_id, 'npIXxOAn5')
+
     def test_list_check_types(self):
         result = list(self.driver.list_check_types())
         self.assertEqual(len(result), 2)
@@ -80,6 +96,34 @@ class RackspaceTests(unittest.TestCase):
         result = list(self.driver.list_notification_plans())
         self.assertEqual(len(result), 8)
         self.assertEqual(result[0].label, 'test-notification-plan')
+
+    def test_delete_entity_success(self):
+        entity = self.driver.list_entities()[0]
+        result = self.driver.delete_entity(entity=entity,
+                                           ex_delete_children=False)
+        self.assertTrue(result)
+
+    def test_delete_entity_children_exist(self):
+        entity = self.driver.list_entities()[1]
+        RackspaceMockHttp.type = 'CHILDREN_EXIST'
+
+        try:
+            self.driver.delete_entity(entity=entity,
+                                      ex_delete_children=False)
+        except RackspaceMonitoringValidationError:
+            pass
+        else:
+            self.fail('Exception was not thrown')
+
+    def test_delete_check_success(self):
+        en = self.driver.list_entities()[0]
+        check = self.driver.list_checks(entity=en)[0]
+        check.delete()
+
+    def test_delete_alarm(self):
+        en = self.driver.list_entities()[0]
+        alarm = self.driver.list_alarms(entity=en)[0]
+        alarm.delete()
 
 
 class RackspaceMockHttp(MockHttpTestCase):
@@ -114,6 +158,46 @@ class RackspaceMockHttp(MockHttpTestCase):
     def _23213_notification_plans(self, method, url, body, headers):
         body = self.fixtures.load('notification_plans.json')
         return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6_checks(self, method, url, body, headers):
+        body = self.fixtures.load('checks.json')
+        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6_alarms(self, method, url, body, headers):
+        body = self.fixtures.load('alarms.json')
+        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6(self, method, url, body, headers):
+        body = ''
+        if method == 'DELETE':
+            return (httplib.NO_CONTENT, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+        raise NotImplementedError('')
+
+    def _23213_entities_en8Xmk5lv1_CHILDREN_EXIST(self, method, url, body, headers):
+        if method == 'DELETE':
+            body = self.fixtures.load('error_children_exist.json')
+            return (httplib.BAD_REQUEST, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+        raise NotImplementedError('')
+
+    def _23213_entities_en8B9YwUn6_checks_chhJwYeArX(self, method, url, body, headers):
+        if method == 'DELETE':
+            body = ''
+            return (httplib.NO_CONTENT, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+        raise NotImplementedError('')
+
+    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3(self, method, url, body, headers):
+        if method == 'DELETE':
+            body = ''
+            return (httplib.NO_CONTENT, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+        raise NotImplementedError('')
 
 
 if __name__ == '__main__':
