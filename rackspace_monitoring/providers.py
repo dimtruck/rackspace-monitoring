@@ -14,11 +14,11 @@
 # limitations under the License.
 
 from libcloud.utils.misc import get_driver as get_provider_driver
-from libcloud_monitoring.types import Provider
+from rackspace_monitoring.types import Provider
 
 DRIVERS = {
     Provider.RACKSPACE:
-        ('libcloud_monitoring.drivers.rackspace', 'RackspaceMonitoringDriver'),
+        ('rackspace_monitoring.drivers.rackspace', 'RackspaceMonitoringDriver'),
 }
 
 

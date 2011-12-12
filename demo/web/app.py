@@ -8,8 +8,8 @@ sys.path.insert(0, root_dir)
 import cherrypy
 from jinja2 import Environment, FileSystemLoader
 
-from libcloud_monitoring.types import Provider
-from libcloud_monitoring.providers import get_driver
+from rackspace_monitoring.types import Provider
+from rackspace_monitoring.providers import get_driver
 
 env = Environment(loader=FileSystemLoader(os.path.join(web_dir, 'templates')))
 

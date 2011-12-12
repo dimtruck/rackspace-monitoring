@@ -21,11 +21,11 @@ import unittest
 import httplib
 from os.path import join as pjoin
 
-from libcloud_monitoring.base import (MonitoringDriver, Entity,
+from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan,
                                       Notification, CheckType, Alarm, Check,
                                       AlarmChangelog)
-from libcloud_monitoring.drivers.rackspace import RackspaceMonitoringDriver
+from rackspace_monitoring.drivers.rackspace import RackspaceMonitoringDriver
 
 from test import MockResponse, MockHttpTestCase, XML_HEADERS
 from test.file_fixtures import FIXTURES_ROOT

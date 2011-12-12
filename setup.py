@@ -31,7 +31,7 @@ TEST_PATHS = ['test']
 def read_version_string():
     version = None
     sys.path.insert(0, pjoin(os.getcwd()))
-    from libcloud_monitoring import __version__
+    from rackspace_monitoring import __version__
     version = __version__
     sys.path.pop(0)
     return version
@@ -125,7 +125,7 @@ class Pep8Command(Command):
             sys.exit(1)
 
         cwd = os.getcwd()
-        retcode = call(('pep8 %s/libcloud_monitoring/ %s/test/' %
+        retcode = call(('pep8 %s/rackspace_monitoring/ %s/test/' %
                 (cwd, cwd)).split(' '))
         sys.exit(retcode)
 
@@ -143,7 +143,7 @@ class ApiDocsCommand(Command):
     def run(self):
         os.system(
             'pydoctor'
-            ' --add-package=libcloud_monitoring'
+            ' --add-package=rackspace_monitoring'
             ' --project-name="Libcloud Monitoring"'
             ' --make-html'
             ' --html-viewsource-base="%s"'
@@ -182,11 +182,11 @@ setup(
     author_email='',
     requires=(['apache_libcloud(>=0.7.1)']),
     packages=[
-        'libcloud_monitoring',
-        'libcloud_monitoring.drivers',
+        'rackspace_monitoring',
+        'rackspace_monitoring.drivers',
     ],
     package_dir={
-        'libcloud_monitoring': 'libcloud_monitoring',
+        'rackspace_monitoring': 'rackspace_monitoring',
     },
     license='Apache License (2.0)',
     url='http://libcloud.apache.org/',

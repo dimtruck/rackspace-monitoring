@@ -25,10 +25,10 @@ from libcloud.common.types import MalformedResponseError, LibcloudError
 from libcloud.common.types import LazyList
 from libcloud.common.base import Response
 
-from libcloud_monitoring.providers import Provider
-from libcloud_monitoring.utils import to_underscore_separated
+from rackspace_monitoring.providers import Provider
+from rackspace_monitoring.utils import to_underscore_separated
 
-from libcloud_monitoring.base import (MonitoringDriver, Entity,
+from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan, MonitoringZone,
                                       Notification, CheckType, Alarm, Check,
                                       NotificationType, AlarmChangelog)
@@ -129,7 +129,8 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
     auth_url = AUTH_URL_US
     _url_key = "monitoring_url"
 
-    def __init__(self, user_id, key, secure=False, ex_force_base_url=None, ex_force_auth_url=None):
+    def __init__(self, user_id, key, secure=False, ex_force_base_url=None,
+                 ex_force_auth_url=None, ex_force_auth_version='2.0'):
         self.api_version = API_VERSION
         self.monitoring_url = ex_force_base_url
         self.accept_format = 'application/json'
@@ -137,7 +138,7 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
                                 secure=secure,
                                 ex_force_base_url=ex_force_base_url,
                                 ex_force_auth_url=ex_force_auth_url,
-                                ex_force_auth_version="2.0")
+                                ex_force_auth_version=ex_force_auth_version)
 
     def request(self, action, params=None, data='', headers=None, method='GET',
                 raw=False):
@@ -171,6 +172,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def __init__(self, *args, **kwargs):
         self._ex_force_base_url = kwargs.pop('ex_force_base_url', None)
         self._ex_force_auth_url = kwargs.pop('ex_force_auth_url', None)
+        self._ex_force_auth_version = kwargs.pop('ex_force_auth_version', None)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
         # TODO: Change before beta / public release
@@ -185,6 +187,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             rv['ex_force_base_url'] =  self._ex_force_base_url
         if self._ex_force_auth_url:
             rv['ex_force_auth_url'] =  self._ex_force_auth_url
+        if self._ex_force_auth_version:
+            rv['ex_force_auth_version'] =  self._ex_force_auth_version
         return rv
 
     def _get_more(self, last_key, value_dict):
