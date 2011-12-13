@@ -12,9 +12,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 import os
 import sys
-import doctest
 
 from distutils.core import setup
 from distutils.core import Command
@@ -24,7 +24,7 @@ from subprocess import call
 from os.path import splitext, basename, join as pjoin
 
 
-HTML_VIEWSOURCE_BASE = 'https://github.com/racker/libcloud-monitoring'
+HTML_VIEWSOURCE_BASE = 'https://github.com/racker/rackspace-monitoring'
 PROJECT_BASE_DIR = ''
 TEST_PATHS = ['test']
 
@@ -51,15 +51,6 @@ class TestCommand(Command):
         pass
 
     def run(self):
-        try:
-            import mock
-            mock
-        except ImportError:
-            print 'Missing "mock" library. mock is library is needed ' + \
-                  'to run the tests. You can install it using pip: ' + \
-                  'pip install mock'
-            sys.exit(1)
-
         status = self._run_tests()
         sys.exit(status)
 
