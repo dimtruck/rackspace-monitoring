@@ -166,11 +166,11 @@ class CoverageCommand(Command):
         cov.html_report()
 
 setup(
-    name='libcloud-monitoring',
+    name='rackspace-monitoring',
     version=read_version_string(),
-    description='Client library for Rackspace Monitoring',
+    description='Client library for Rackspace Cloud Monitoring',
     author='Rackspace',
-    author_email='',
+    author_email='cmbeta@rackspace.com',
     requires=(['apache_libcloud(>=0.7.1)']),
     packages=[
         'rackspace_monitoring',
@@ -180,7 +180,7 @@ setup(
         'rackspace_monitoring': 'rackspace_monitoring',
     },
     license='Apache License (2.0)',
-    url='http://libcloud.apache.org/',
+    url='https://github.com/racker/rackspace-monitoring',
     cmdclass={
         'test': TestCommand,
         'pep8': Pep8Command,
