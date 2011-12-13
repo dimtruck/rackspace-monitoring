@@ -321,9 +321,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                        'list_item_mapper': self._to_monitoring_zone}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    #######
+    ##########
     ## Alarms
-    #######
+    ##########
+
     def get_alarm(self, entity_id, alarm_id):
         url = "/entities/%s/alarms/%s" % (entity_id, alarm_id)
         resp = self.connection.request(url)
@@ -386,9 +387,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                                        data=data)
         return resp.object
 
-    #######
+    ####################
     ## Notifications
-    #######
+    ####################
 
     def list_notifications(self, ex_next_marker=None):
         value_dict = {'url': '/notifications',
@@ -424,9 +425,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._create("/notifications", data=data,
                             coerce=self.get_notification)
 
-    #######
+    ####################
     ## Notification Plan
-    #######
+    ####################
 
     def _to_notification_plan(self, notification_plan, value_dict):
         critical_state = notification_plan.get('critical_state', [])
@@ -467,9 +468,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._create("/notification_plans", data=data,
                             coerce=self.get_notification_plan)
 
-    #######
+    ###########
     ## Checks
-    #######
+    ###########
 
     def get_check(self, entity_id, check_id):
         resp = self.connection.request('/entities/%s/checks/%s' % (entity_id,
@@ -540,9 +541,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                                        method='DELETE')
         return resp.status == httplib.NO_CONTENT
 
-    #######
+    ###########
     ## Entity
-    #######
+    ###########
 
     def get_entity(self, entity_id):
         resp = self.connection.request("/entities/%s" % (entity_id))
@@ -610,9 +611,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    #######
+    #########
     ## Other
-    #######
+    #########
 
     def test_check_and_alarm(self, entity, criteria, **kwargs):
         check_data = self.test_check(entity=entity, **kwargs)

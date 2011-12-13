@@ -120,6 +120,30 @@ class RackspaceTests(unittest.TestCase):
         self.assertTrue('transaction_id' in result[0])
         self.assertTrue('notification_results' in result[0])
 
+    def test_test_alarm(self):
+        entity = self.driver.list_entities()[0]
+        criteria = ('if (metric[\"code\"] == \"404\") { return CRITICAL, \"not',
+                   'found\" } return OK')
+        check_data = []
+        result = self.driver.test_alarm(entity=entity, criteria=criteria,
+                                        check_data=check_data)
+
+        self.assertTrue('timestamp' in result[0])
+        self.assertTrue('computed_state' in result[0])
+        self.assertTrue('status' in result[0])
+
+    def test_check(self):
+        entity = self.driver.list_entities()[0]
+        check_data = {'label': 'test', 'monitoring_zones': ['mzA'],
+                      'target_alias': 'default', 'details': {'url':
+                      'http://www.google.com'}, 'type': 'remote.http'}
+        result = self.driver.test_check(entity=entity)
+
+        self.assertTrue('available' in result[0])
+        self.assertTrue('monitoring_zone_id' in result[0])
+        self.assertTrue('available' in result[0])
+        self.assertTrue('metrics' in result[0])
+
     def test_delete_entity_success(self):
         entity = self.driver.list_entities()[0]
         result = self.driver.delete_entity(entity=entity,
@@ -147,6 +171,14 @@ class RackspaceTests(unittest.TestCase):
         en = self.driver.list_entities()[0]
         alarm = self.driver.list_alarms(entity=en)[0]
         alarm.delete()
+
+    def test_delete_notification(self):
+        notification = self.driver.list_notifications()[0]
+        notification.delete()
+
+    def test_delete_notification_plan(self):
+        notification_plan = self.driver.list_notification_plans()[0]
+        notification_plan.delete()
 
 
 class RackspaceMockHttp(MockHttpTestCase):
@@ -214,6 +246,18 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
+    def _23213_entities_en8B9YwUn6_test_alarm(self, method, url, body,
+                                              headers):
+        body = self.fixtures.load('test_alarm.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6_test_check(self, method, url, body,
+                                              headers):
+        body = self.fixtures.load('test_check.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
     def _23213_entities_en8B9YwUn6(self, method, url, body, headers):
         body = ''
         if method == 'DELETE':
@@ -242,6 +286,22 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3(self, method, url, body,
                                                      headers):
+        if method == 'DELETE':
+            body = ''
+            return (httplib.NO_CONTENT, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+        raise NotImplementedError('')
+
+    def _23213_notifications_ntQVm5IyiR(self, method, url, body, headers):
+        if method == 'DELETE':
+            body = ''
+            return (httplib.NO_CONTENT, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+        raise NotImplementedError('')
+
+    def _23213_notification_plans_npIXxOAn5(self, method, url, body, headers):
         if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
