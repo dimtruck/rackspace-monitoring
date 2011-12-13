@@ -18,7 +18,8 @@ from rackspace_monitoring.types import Provider
 
 DRIVERS = {
     Provider.RACKSPACE:
-        ('rackspace_monitoring.drivers.rackspace', 'RackspaceMonitoringDriver'),
+        ('rackspace_monitoring.drivers.rackspace',
+         'RackspaceMonitoringDriver'),
 }
 
 

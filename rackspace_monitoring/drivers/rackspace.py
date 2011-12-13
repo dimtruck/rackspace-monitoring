@@ -184,11 +184,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _ex_connection_class_kwargs(self):
         rv = {}
         if self._ex_force_base_url:
-            rv['ex_force_base_url'] =  self._ex_force_base_url
+            rv['ex_force_base_url'] = self._ex_force_base_url
         if self._ex_force_auth_url:
-            rv['ex_force_auth_url'] =  self._ex_force_auth_url
+            rv['ex_force_auth_url'] = self._ex_force_auth_url
         if self._ex_force_auth_version:
-            rv['ex_force_auth_version'] =  self._ex_force_auth_version
+            rv['ex_force_auth_version'] = self._ex_force_auth_version
         return rv
 
     def _get_more(self, last_key, value_dict):

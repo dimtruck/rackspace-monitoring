@@ -24,7 +24,8 @@ class MonitoringZone(object):
     Represents a location from where the entities are monitored.
     """
 
-    def __init__(self, id, label, country_code, source_ips, driver, extra=None):
+    def __init__(self, id, label, country_code, source_ips, driver,
+                 extra=None):
         self.id = id
         self.label = label
         self.country_code = country_code
@@ -88,7 +89,7 @@ class Notification(object):
         return self.driver.delete_notification(self)
 
     def __repr__(self):
-        return ('<Notification: id=%s, label=%s, type=%s ...>' % (self.id, 
+        return ('<Notification: id=%s, label=%s, type=%s ...>' % (self.id,
                  self.label, self.type))
 
 

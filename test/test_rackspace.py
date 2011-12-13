@@ -26,7 +26,7 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       Notification, CheckType, Alarm, Check,
                                       AlarmChangelog)
 from rackspace_monitoring.drivers.rackspace import (RackspaceMonitoringDriver,
-                                                    RackspaceMonitoringValidationError)
+                                            RackspaceMonitoringValidationError)
 
 from test import MockResponse, MockHttpTestCase
 from test.file_fixtures import FIXTURES_ROOT
@@ -35,16 +35,20 @@ from secrets import RACKSPACE_PARAMS
 
 FIXTURES_ROOT['monitoring'] = pjoin(os.getcwd(), 'test/fixtures')
 
+
 class MonitoringFileFixtures(FileFixtures):
     def __init__(self, sub_dir=''):
-        super(MonitoringFileFixtures, self).__init__(fixtures_type='monitoring',
-                                                     sub_dir=sub_dir)
+        super(MonitoringFileFixtures, self).__init__(
+                                                    fixtures_type='monitoring',
+                                                    sub_dir=sub_dir)
+
 
 class RackspaceTests(unittest.TestCase):
     def setUp(self):
-        RackspaceMonitoringDriver.connectionCls.conn_classes = (RackspaceMockHttp,
-                                                                RackspaceMockHttp)
-        RackspaceMonitoringDriver.connectionCls.auth_url = "https://auth.api.example.com/v1.1/"
+        RackspaceMonitoringDriver.connectionCls.conn_classes = (
+                RackspaceMockHttp, RackspaceMockHttp)
+        RackspaceMonitoringDriver.connectionCls.auth_url = \
+                'https://auth.api.example.com/v1.1/'
         RackspaceMockHttp.type = None
         self.driver = RackspaceMonitoringDriver(*RACKSPACE_PARAMS,
                 ex_force_base_url='http://www.todo.com')
@@ -90,7 +94,8 @@ class RackspaceTests(unittest.TestCase):
         result = list(self.driver.list_notifications())
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0].type, 'webhook')
-        self.assertEqual(result[0].details['url'], 'http://www.postbin.org/lulz')
+        self.assertEqual(result[0].details['url'],
+                         'http://www.postbin.org/lulz')
 
     def test_list_notification_plans(self):
         result = list(self.driver.list_notification_plans())
@@ -133,39 +138,48 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _v2_0_tokens(self, method, url, body, headers):
         body = self.auth_fixtures.load('_v2_0_tokens.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_monitoring_zones(self, method, url, body, headers):
         body = self.fixtures.load('monitoring_zones.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_entities(self, method, url, body, headers):
         body = self.fixtures.load('entities.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_check_types(self, method, url, body, headers):
         body = self.fixtures.load('check_types.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_notification_types(self, method, url, body, headers):
         body = self.fixtures.load('notification_types.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_notifications(self, method, url, body, headers):
         body = self.fixtures.load('notifications.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_notification_plans(self, method, url, body, headers):
         body = self.fixtures.load('notification_plans.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_entities_en8B9YwUn6_checks(self, method, url, body, headers):
         body = self.fixtures.load('checks.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_entities_en8B9YwUn6_alarms(self, method, url, body, headers):
         body = self.fixtures.load('alarms.json')
-        return (httplib.OK, body, self.json_content_headers, httplib.responses[httplib.OK])
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
 
     def _23213_entities_en8B9YwUn6(self, method, url, body, headers):
         body = ''
@@ -175,7 +189,8 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_entities_en8Xmk5lv1_CHILDREN_EXIST(self, method, url, body, headers):
+    def _23213_entities_en8Xmk5lv1_CHILDREN_EXIST(self, method, url, body,
+                                                  headers):
         if method == 'DELETE':
             body = self.fixtures.load('error_children_exist.json')
             return (httplib.BAD_REQUEST, body, self.json_content_headers,
@@ -183,7 +198,8 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_entities_en8B9YwUn6_checks_chhJwYeArX(self, method, url, body, headers):
+    def _23213_entities_en8B9YwUn6_checks_chhJwYeArX(self, method, url, body,
+                                                     headers):
         if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
@@ -191,7 +207,8 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3(self, method, url, body, headers):
+    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3(self, method, url, body,
+                                                     headers):
         if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
