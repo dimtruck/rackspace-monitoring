@@ -100,6 +100,26 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(len(result), 8)
         self.assertEqual(result[0].label, 'test-notification-plan')
 
+    def test_ex_list_alarm_history_checks(self):
+        entity = self.driver.list_entities()[0]
+        alarm = self.driver.list_alarms(entity=entity)[0]
+        result = self.driver.ex_list_alarm_history_checks(entity=entity,
+                                                          alarm=alarm)
+        self.assertEqual(len(result['check_ids']), 2)
+
+    def test_ex_list_alarm_history(self):
+        entity = self.driver.list_entities()[0]
+        alarm = self.driver.list_alarms(entity=entity)[0]
+        check = self.driver.list_checks(entity=entity)[0]
+        result = self.driver.ex_list_alarm_history(entity=entity,
+                                                   alarm=alarm, check=check)
+        self.assertEqual(len(result), 1)
+        self.assertTrue('timestamp' in result[0])
+        self.assertTrue('notification_plan_id' in result[0])
+        self.assertTrue('computed_state' in result[0])
+        self.assertTrue('transaction_id' in result[0])
+        self.assertTrue('notification_results' in result[0])
+
     def test_delete_entity_success(self):
         entity = self.driver.list_entities()[0]
         result = self.driver.delete_entity(entity=entity,
@@ -176,6 +196,21 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _23213_entities_en8B9YwUn6_alarms(self, method, url, body, headers):
         body = self.fixtures.load('alarms.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_history(self, method,
+                                                             url, body,
+                                                             headers):
+        body = self.fixtures.load('list_alarm_history_checks.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_history_chhJwYeArX(self,
+                                                             method,
+                                                             url, body,
+                                                             headers):
+        body = self.fixtures.load('list_alarm_history.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 

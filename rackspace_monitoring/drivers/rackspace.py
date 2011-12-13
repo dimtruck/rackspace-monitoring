@@ -620,7 +620,24 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         result = self.test_alarm(entity=entity, **data)
         return result
 
+    ####################
     # Extension methods
+    ####################
+
+    def ex_list_alarm_history_checks(self, entity, alarm):
+        resp = self.connection.request('/entities/%s/alarms/%s/history' %
+                                       (entity.id, alarm.id)).object
+        return resp
+
+    def ex_list_alarm_history(self, entity, alarm, check, ex_next_marker=None):
+        # TODO: Should probably be an object.
+        value_dict = {'url': '/entities/%s/alarms/%s/history/%s' %
+                              (entity.id, alarm.id, check.id),
+                       'list_item_mapper': self._to_alarm_history_obj}
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def _to_alarm_history_obj(self, values, value_dict):
+        return values
 
     def ex_delete_checks(self, entity):
         # Delete all Checks for an entity
