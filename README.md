@@ -25,6 +25,20 @@ driver = Cls('username', 'api key')
 pprint(driver.list_entities())
 ```
 
+# Testing, style, code coverage
+
+## Running tests
+
+`python setup.py test`
+
+## Checking pep8 compliance
+
+`python setup.py pep8`
+
+## Genrating code coverage report
+
+`python setup.py coverage`
+
 # Issues, Feedback
 
 Please use Github issue tracker or send an email to `cmbeta@rackspace.com`.
