@@ -36,8 +36,8 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
 
-API_VERSION = '1.0'
-
+API_VERSION = 'v1.0'
+API_URL = 'https://cmbeta.api.rackspacecloud.com/%s' % (API_VERSION)
 
 class RackspaceMonitoringValidationError(LibcloudError):
 
@@ -129,7 +129,7 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
     auth_url = AUTH_URL_US
     _url_key = "monitoring_url"
 
-    def __init__(self, user_id, key, secure=False, ex_force_base_url=None,
+    def __init__(self, user_id, key, secure=False, ex_force_base_url=API_URL,
                  ex_force_auth_url=None, ex_force_auth_version='2.0'):
         self.api_version = API_VERSION
         self.monitoring_url = ex_force_base_url
