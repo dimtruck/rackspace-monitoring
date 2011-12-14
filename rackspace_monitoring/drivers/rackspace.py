@@ -177,6 +177,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         # TODO: Change before beta / public release
         self.connection._populate_hosts_and_request_paths()
+        print self.connection.tenant_ids
         tenant_id = self.connection.tenant_ids['compute']
         self.connection._force_base_url = '%s/%s' % (
                 self.connection._force_base_url, tenant_id)
@@ -522,7 +523,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         resp = self.connection.request("/entities/%s/test-check" % (entity.id),
                                        method='POST',
                                        data=data)
-        # TODO: create native types
         return resp.object
 
     def create_check(self, entity, **kwargs):
@@ -600,7 +600,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return resp.object
 
     def _to_audit(self, audit, value_dict):
-        # TODO: add class
         return audit
 
     def list_audits(self, start_from=None, to=None):
@@ -631,7 +630,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return resp
 
     def ex_list_alarm_history(self, entity, alarm, check, ex_next_marker=None):
-        # TODO: Should probably be an object.
         value_dict = {'url': '/entities/%s/alarms/%s/history/%s' %
                               (entity.id, alarm.id, check.id),
                        'list_item_mapper': self._to_alarm_history_obj}
