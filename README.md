@@ -27,4 +27,4 @@ pprint(driver.list_entities())
 
 # Issues, Feedback
 
-Please use Github issues or send an email to `cmbeta@rackspace.com`.
+Please use Github issue tracker or send an email to `cmbeta@rackspace.com`.
