@@ -8,7 +8,6 @@ built on top of [Apache Libcloud](http://libcloud.apache.org).
 Library can be installed using `pip`:
 
 ```bash
-pip install apache-libcloud
 pip install rackspace-monitoring
 ```
 
