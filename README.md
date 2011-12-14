@@ -38,10 +38,10 @@ the one bellow:
 This can be addresses by installing the CA certificate files. Bellow you can
 find the names of the packages which include CA certificate files.
 
-* *openssl* on CentOS/Fedora (yum)
-* *ca-certificates* on Debian/Ubuntu/Arch/Gentoo (apt-get)
-* *ca_root_nss* on FreeBSD (ports)
-* *curl-ca-bundle* on Mac OS X (ports)
+* **openssl** on CentOS/Fedora (yum)
+* **ca-certificates** on Debian/Ubuntu/Arch/Gentoo (apt-get)
+* **ca_root_nss** on FreeBSD (ports)
+* **curl-ca-bundle** on Mac OS X (ports)
 
 # Testing, style, code coverage
 
