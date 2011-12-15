@@ -550,8 +550,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_entity(self, entity, value_dict):
         ips = []
         ipaddrs = entity.get('ip_addresses', {})
-        for key in ipaddrs.keys():
-            ips.append((key, ipaddrs[key]))
+        if ipaddrs is not None:
+            for key in ipaddrs.keys():
+                ips.append((key, ipaddrs[key]))
         return Entity(id=entity['id'], label=entity['label'],
                       extra=entity['metadata'], driver=self, ip_addresses=ips)
 
