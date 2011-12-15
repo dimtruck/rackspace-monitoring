@@ -47,8 +47,10 @@ class RackspaceTests(unittest.TestCase):
                 RackspaceMockHttp, RackspaceMockHttp)
         RackspaceMonitoringDriver.connectionCls.auth_url = \
                 'https://auth.api.example.com/v1.1/'
+
         RackspaceMockHttp.type = None
-        self.driver = RackspaceMonitoringDriver(*RACKSPACE_PARAMS,
+        self.driver = RackspaceMonitoringDriver(key=RACKSPACE_PARAMS[0],
+                                                secret=RACKSPACE_PARAMS[1],
                 ex_force_base_url='http://www.todo.com')
 
     def test_list_monitoring_zones(self):

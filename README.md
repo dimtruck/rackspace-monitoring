@@ -47,7 +47,21 @@ find the names of the packages which include CA certificate files.
 
 ## Running tests
 
-`python setup.py test`
+`sudo tox`
+
+This will run tests on all the supported versions.
+
+If you only want to run tests for a single version use:
+
+`sudo tox -e <version>`
+
+Where version is one of:
+
+* py25
+* py26
+* py27
+* pypy
+* py32
 
 ## Checking pep8 compliance
 
