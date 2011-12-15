@@ -57,9 +57,9 @@ class TestCommand(Command):
     def _run_tests(self):
         secrets = pjoin(self._dir, 'test', 'secrets.py')
         if not os.path.isfile(secrets):
-            print "Missing %s" % (secrets)
-            print "Maybe you forgot to copy it from -dist:"
-            print "  cp test/secrets.py-dist test/secrets.py"
+            print('Missing "mock" library. mock is library is needed '
+                 'to run the tests. You can install it using pip: '
+                 'pip install mock')
             sys.exit(1)
 
         pre_python26 = (sys.version_info[0] == 2
@@ -80,7 +80,7 @@ class TestCommand(Command):
                 missing.append("ssl")
 
             if missing:
-                print "Missing dependencies: %s" % ", ".join(missing)
+                print("Missing dependencies: " + ", ".join(missing))
                 sys.exit(1)
 
         testfiles = []
@@ -111,8 +111,8 @@ class Pep8Command(Command):
             import pep8
             pep8
         except ImportError:
-            print 'Missing "pep8" library. You can install it using pip: ' + \
-                  'pip install pep8'
+            print ('Missing "pep8" library. You can install it using pip: '
+                  'pip install pep8')
             sys.exit(1)
 
         cwd = os.getcwd()

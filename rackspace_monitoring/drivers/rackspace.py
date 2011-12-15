@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import httplib
-import urlparse
+import sys
 
 try:
     import simplejson as json
 except:
     import json
 
+from libcloud.utils.py3 import httplib, urlparse
 from libcloud.common.types import MalformedResponseError, LibcloudError
 from libcloud.common.types import LazyList
 from libcloud.common.base import Response
@@ -499,6 +499,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def _check_kwarg_to_data(self, kwargs):
+        filtered = {}
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
                 'label': kwargs.get('label'),
@@ -512,8 +513,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 }
 
         for k in data.keys():
-            if data[k] == None:
-                del data[k]
+            if data[k] is not None:
+                filtered[k] = data[k]
 
         return data
 
@@ -561,7 +562,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         try:
             resp = self.connection.request("/entities/%s" % (entity.id),
                                            method='DELETE')
-        except RackspaceMonitoringValidationError, e:
+        except RackspaceMonitoringValidationError:
+            e = sys.exc_info()[1]
             type = e.details['type']
             if not ex_delete_children or e.type != 'childrenExistError':
                 raise e

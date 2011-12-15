@@ -16,9 +16,9 @@
 import sys
 import os
 import unittest
-import httplib
 from os.path import join as pjoin
 
+from libcloud.utils.py3 import httplib, urlparse
 from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan,
                                       Notification, CheckType, Alarm, Check,
