@@ -484,10 +484,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             'timeout': obj['timeout'],
             'period': obj['period'],
             'monitoring_zones': obj['monitoring_zones_poll'],
-            'target_alias': obj['target_alias'],
-            'target_resolver': obj['target_resolver'],
+            'target_alias': obj.get('target_alias', None),
+            'target_resolver': obj.get('target_resolver', None),
             'type': obj['type'],
-            'details': obj['details'],
+            'details': obj.get('details', {}),
             'driver': self,
             'entity_id': value_dict['entity_id']})
 
