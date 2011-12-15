@@ -100,19 +100,20 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(len(result), 8)
         self.assertEqual(result[0].label, 'test-notification-plan')
 
-    def test_ex_list_alarm_history_checks(self):
+    def test_ex_list_alarm_notification_history_checks(self):
         entity = self.driver.list_entities()[0]
         alarm = self.driver.list_alarms(entity=entity)[0]
-        result = self.driver.ex_list_alarm_history_checks(entity=entity,
+        result = self.driver.ex_list_alarm_notification_history_checks(
+                                                          entity=entity,
                                                           alarm=alarm)
         self.assertEqual(len(result['check_ids']), 2)
 
-    def test_ex_list_alarm_history(self):
+    def test_ex_list_alarm_notification_history(self):
         entity = self.driver.list_entities()[0]
         alarm = self.driver.list_alarms(entity=entity)[0]
         check = self.driver.list_checks(entity=entity)[0]
-        result = self.driver.ex_list_alarm_history(entity=entity,
-                                                   alarm=alarm, check=check)
+        result = self.driver.ex_list_alarm_notification_history(entity=entity,
+                                                     alarm=alarm, check=check)
         self.assertEqual(len(result), 1)
         self.assertTrue('timestamp' in result[0])
         self.assertTrue('notification_plan_id' in result[0])
@@ -231,14 +232,15 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_history(self, method,
+    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_notification_history(self,
+                                                             method,
                                                              url, body,
                                                              headers):
         body = self.fixtures.load('list_alarm_history_checks.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_history_chhJwYeArX(self,
+    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_notification_history_chhJwYeArX(self,
                                                              method,
                                                              url, body,
                                                              headers):
