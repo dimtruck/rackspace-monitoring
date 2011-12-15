@@ -39,6 +39,7 @@ from libcloud.common.openstack import OpenStackBaseConnection
 API_VERSION = 'v1.0'
 API_URL = 'https://cmbeta.api.rackspacecloud.com/%s' % (API_VERSION)
 
+
 class RackspaceMonitoringValidationError(LibcloudError):
 
     def __init__(self, code, type, message, details, driver):
@@ -622,18 +623,20 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     # Extension methods
     ####################
 
-    def ex_list_alarm_history_checks(self, entity, alarm):
-        resp = self.connection.request('/entities/%s/alarms/%s/history' %
+    def ex_list_alarm_notification_history_checks(self, entity, alarm):
+        resp = self.connection.request(
+                '/entities/%s/alarms/%s/notification_history' %
                                        (entity.id, alarm.id)).object
         return resp
 
-    def ex_list_alarm_history(self, entity, alarm, check, ex_next_marker=None):
-        value_dict = {'url': '/entities/%s/alarms/%s/history/%s' %
+    def ex_list_alarm_notification_history(self, entity, alarm, check,
+                                           ex_next_marker=None):
+        value_dict = {'url': '/entities/%s/alarms/%s/notification_history/%s' %
                               (entity.id, alarm.id, check.id),
-                       'list_item_mapper': self._to_alarm_history_obj}
+               'list_item_mapper': self._to_alarm_notification_history_obj}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def _to_alarm_history_obj(self, values, value_dict):
+    def _to_alarm_notification_history_obj(self, values, value_dict):
         return values
 
     def ex_delete_checks(self, entity):
