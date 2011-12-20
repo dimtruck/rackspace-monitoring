@@ -248,7 +248,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         chunks = path.split('/')[1:]
 
         for i in range(0, len(chunks), 2):
-            key = self._plural_to_singular(chunks[i]) + '_id'
+            chunk = chunks[i]
+
+            if not chunk:
+              continue
+
+            key = self._plural_to_singular(chunk) + '_id'
             key = to_underscore_separated(key)
             rv[key] = chunks[i + 1]
 
