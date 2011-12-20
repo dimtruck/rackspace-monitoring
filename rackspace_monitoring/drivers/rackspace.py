@@ -371,7 +371,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             data=data, coerce=self.get_alarm)
 
     def create_alarm(self, entity, **kwargs):
-        data = {'check_type': kwargs.get('check_type'),
+        data = {'who': kwargs.get('who'),
+                'check_type': kwargs.get('check_type'),
                 'check_id': kwargs.get('check_id'),
                 'criteria': kwargs.get('criteria'),
                 'notification_plan_id': kwargs.get('notification_plan_id')}
@@ -418,7 +419,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             data=data, coerce=self.get_notification)
 
     def create_notification(self, **kwargs):
-        data = {'label': kwargs.get('label'),
+        data = {'who': kwargs.get('who'),
+                'label': kwargs.get('label'),
                 'type': kwargs.get('type'),
                 'details': kwargs.get('details')}
 
@@ -460,7 +462,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             coerce=self.get_notification_plan)
 
     def create_notification_plan(self, **kwargs):
-        data = {'label': kwargs.get('label'),
+        data = {'who': kwargs.get('who'),
+                'label': kwargs.get('label'),
                 'critical_state': kwargs.get('critical_state', []),
                 'warning_state': kwargs.get('warning_state', []),
                 'ok_state': kwargs.get('ok_state', []),
