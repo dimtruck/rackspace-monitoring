@@ -516,7 +516,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             if data[k] is not None:
                 filtered[k] = data[k]
 
-        return data
+        return filtered
 
     def test_check(self, entity, **kwargs):
         data = self._check_kwarg_to_data(kwargs)
