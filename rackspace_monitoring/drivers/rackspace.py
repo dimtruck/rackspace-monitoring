@@ -260,12 +260,25 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return rv
 
     def _create(self, url, data, coerce):
+        params = {}
+
         for k in data.keys():
-            if data[k] == None:
+            if data[k] is None:
                 del data[k]
+
+        if 'who' in data:
+            if data['who'] is not None:
+                params['_who'] = data['who']
+            del data['who']
+
+        if 'why' in data:
+            if data['why'] is not None:
+                params['_why'] = data['why']
+            del data['why']
 
         resp = self.connection.request(url,
                                        method='POST',
+                                       params=params,
                                        data=data)
         if resp.status == httplib.CREATED:
             location = resp.headers.get('location')
@@ -276,12 +289,22 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
-    def _update(self, url, data, coerce):
+    def _update(self, url, data, kwargs, coerce):
+        params = {}
+
         for k in data.keys():
-            if data[k] == None:
+            if data[k] is None:
                 del data[k]
 
-        resp = self.connection.request(url, method='PUT', data=data)
+        if 'who' in kwargs and kwargs['who'] is not None:
+            params['_who'] = kwargs['who']
+
+        if 'why' in kwargs and kwargs['why'] is not None:
+            params['_why'] = kwargs['why']
+
+        resp = self.connection.request(url, method='PUT', params=params,
+                                       data=data)
+
         if resp.status == httplib.NO_CONTENT:
             # location
             # /v1.0/{object_type}/{id}
@@ -293,6 +316,19 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             return coerce(**obj_ids)
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
+
+    def _delete(self, url, kwargs=None):
+        kwargs = kwargs or {}
+        params = {}
+
+        if 'who' in kwargs and kwargs['who'] is not None:
+            params['_who'] = kwargs['who']
+
+        if 'why' in kwargs and kwargs['why'] is not None:
+            params['_why'] = kwargs['why']
+
+        resp = self.connection.request(action=url, method='DELETE', params=params)
+        return resp.status == httplib.NO_CONTENT
 
     def list_check_types(self):
         value_dict = {'url': '/check_types',
@@ -364,19 +400,19 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                                          state=values['state'])
         return alarm_changelog
 
-    def delete_alarm(self, alarm):
-        resp = self.connection.request("/entities/%s/alarms/%s" % (
-            alarm.entity_id, alarm.id),
-            method='DELETE')
-        return resp.status == httplib.NO_CONTENT
+    def delete_alarm(self, alarm, **kwargs):
+        return self._delete(url="/entities/%s/alarms/%s" % (alarm.entity_id,
+                                                            alarm.id),
+                            kwargs=kwargs)
 
-    def update_alarm(self, alarm, data):
+    def update_alarm(self, alarm, data, **kwargs):
         return self._update("/entities/%s/alarms/%s" % (alarm.entity_id,
                                                         alarm.id),
-            data=data, coerce=self.get_alarm)
+            data=data, kwargs=kwargs, coerce=self.get_alarm)
 
     def create_alarm(self, entity, **kwargs):
         data = {'who': kwargs.get('who'),
+                'why': kwargs.get('why'),
                 'check_type': kwargs.get('check_type'),
                 'check_id': kwargs.get('check_id'),
                 'criteria': kwargs.get('criteria'),
@@ -414,17 +450,17 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return self._to_notification(resp.object, {})
 
-    def delete_notification(self, notification):
-        resp = self.connection.request("/notifications/%s" % (notification.id),
-                                       method='DELETE')
-        return resp.status == httplib.NO_CONTENT
+    def delete_notification(self, notification, **kwargs):
+        return self._delete(url="/notifications/%s" % (notification.id),
+                            kwargs=kwargs)
 
-    def update_notification(self, notification, data):
+    def update_notification(self, notification, data, **kwargs):
         return self._update("/notifications/%s" % (notification.id),
-            data=data, coerce=self.get_notification)
+            data=data, kwargs=kwargs, coerce=self.get_notification)
 
     def create_notification(self, **kwargs):
         data = {'who': kwargs.get('who'),
+                'why': kwargs.get('why'),
                 'label': kwargs.get('label'),
                 'type': kwargs.get('type'),
                 'details': kwargs.get('details')}
@@ -450,10 +486,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             notification_plan_id))
         return self._to_notification_plan(resp.object, {})
 
-    def delete_notification_plan(self, notification_plan):
-        resp = self.connection.request("/notification_plans/%s" %
-                (notification_plan.id), method='DELETE')
-        return resp.status == httplib.NO_CONTENT
+    def delete_notification_plan(self, notification_plan, **kwargs):
+        return self._delete(url="/notification_plans/%s" %
+                            (notification_plan.id),
+                            kwargs=kwargs)
 
     def list_notification_plans(self, ex_next_marker=None):
         value_dict = {'url': "/notification_plans",
@@ -461,13 +497,14 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       'list_item_mapper': self._to_notification_plan}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def update_notification_plan(self, notification_plan, data):
+    def update_notification_plan(self, notification_plan, data, **kwargs):
         return self._update("/notification_plans/%s" % (notification_plan.id),
-            data=data,
+            data=data, kwargs=kwargs,
             coerce=self.get_notification_plan)
 
     def create_notification_plan(self, **kwargs):
         data = {'who': kwargs.get('who'),
+                'why': kwargs.get('why'),
                 'label': kwargs.get('label'),
                 'critical_state': kwargs.get('critical_state', []),
                 'warning_state': kwargs.get('warning_state', []),
@@ -538,16 +575,15 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._create("/entities/%s/checks" % (entity.id),
             data=data, coerce=self.get_check)
 
-    def update_check(self, check, data):
+    def update_check(self, check, data, **kwargs):
         return self._update("/entities/%s/checks/%s" % (check.entity_id,
                                                         check.id),
-            data=data, coerce=self.get_check)
+            data=data, kwargs=kwargs, coerce=self.get_check)
 
-    def delete_check(self, check):
-        resp = self.connection.request("/entities/%s/checks/%s" %
-                                       (check.entity_id, check.id),
-                                       method='DELETE')
-        return resp.status == httplib.NO_CONTENT
+    def delete_check(self, check, **kwargs):
+        return self._delete(url="/entities/%s/checks/%s" %
+                            (check.entity_id, check.id),
+                            kwargs=kwargs)
 
     ###########
     ## Entity
@@ -566,10 +602,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Entity(id=entity['id'], label=entity['label'],
                       extra=entity['metadata'], driver=self, ip_addresses=ips)
 
-    def delete_entity(self, entity, ex_delete_children=False):
+    def delete_entity(self, entity, ex_delete_children=False, **kwargs):
         try:
-            resp = self.connection.request("/entities/%s" % (entity.id),
-                                           method='DELETE')
+            return self._delete(url="/entities/%s" % (entity.id),
+                                kwargs=kwargs)
         except RackspaceMonitoringValidationError:
             e = sys.exc_info()[1]
             type = e.details['type']
@@ -581,9 +617,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             elif type == 'Alarm':
                 self.ex_delete_alarms(entity=entity)
 
-            return self.delete_entity(entity=entity, ex_delete_children=True)
-
-        return resp.status == httplib.NO_CONTENT
+            return self.delete_entity(entity=entity, ex_delete_children=True,
+                                      **kwargs)
 
     def list_entities(self, ex_next_marker=None):
         value_dict = {'url': '/entities',
@@ -601,9 +636,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return self._create("/entities", data=data, coerce=self.get_entity)
 
-    def update_entity(self, entity, data):
+    def update_entity(self, entity, data, **kwargs):
         return self._update("/entities/%s" % (entity.id),
-            data=data, coerce=self.get_entity)
+            data=data, kwargs=kwargs, coerce=self.get_entity)
 
     def usage(self):
         resp = self.connection.request("/usage")
