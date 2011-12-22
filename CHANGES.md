@@ -1,4 +1,4 @@
-rackspace-monitoring v0.2.0 - 2011-12-21:
+rackspace-monitoring v0.2.1 - 2011-12-22:
 
 * Make all the create, update and delete methods take an optional 'who' and
   'why' keyword arguments.
