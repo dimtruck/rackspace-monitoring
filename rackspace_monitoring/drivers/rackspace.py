@@ -251,7 +251,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             chunk = chunks[i]
 
             if not chunk:
-              continue
+                continue
 
             key = self._plural_to_singular(chunk) + '_id'
             key = to_underscore_separated(key)
@@ -327,7 +327,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         if 'why' in kwargs and kwargs['why'] is not None:
             params['_why'] = kwargs['why']
 
-        resp = self.connection.request(action=url, method='DELETE', params=params)
+        resp = self.connection.request(action=url, method='DELETE',
+                                       params=params)
         return resp.status == httplib.NO_CONTENT
 
     def list_check_types(self):
@@ -394,10 +395,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _to_alarm_changelog(self, values, value_dict):
         alarm_changelog = AlarmChangelog(id=values['id'],
-                                         alarm_id=values['alarm_id'],
-                                         entity_id=values['entity_id'],
-                                         check_id=values['check_id'],
-                                         state=values['state'])
+                                       alarm_id=values['alarm_id'],
+                                       entity_id=values['entity_id'],
+                                       check_id=values['check_id'],
+                                       previous_state=values['previous_state'],
+                                       timestamp=values['timestamp'],
+                                       state=values['state'])
         return alarm_changelog
 
     def delete_alarm(self, alarm, **kwargs):

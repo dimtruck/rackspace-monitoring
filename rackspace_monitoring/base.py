@@ -183,12 +183,15 @@ class Check(object):
 
 class AlarmChangelog(object):
 
-    def __init__(self, id, alarm_id, entity_id, check_id, state):
+    def __init__(self, id, alarm_id, entity_id, check_id, previous_state,
+                 state, timestamp):
         self.id = id
         self.alarm_id = alarm_id
         self.entity_id = entity_id
         self.check_id = check_id
+        self.previous_state = previous_state
         self.state = state
+        self.timestamp = timestamp
 
     def __repr__(self):
         return ('<AlarmChangelog: id=%s alarm_id=%s, state=%s...>' % (
