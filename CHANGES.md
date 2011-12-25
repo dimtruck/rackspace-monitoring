@@ -1,3 +1,7 @@
+rackspace-monitoring v0.2.2 - in development:
+
+ * Fix a bug in update_check.
+
 rackspace-monitoring v0.2.1 - 2011-12-22:
 
 * Make all the create, update and delete methods take an optional 'who' and

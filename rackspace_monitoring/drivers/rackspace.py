@@ -579,6 +579,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             data=data, coerce=self.get_check)
 
     def update_check(self, check, data, **kwargs):
+        data = self._check_kwarg_to_data(kwargs=data)
         return self._update("/entities/%s/checks/%s" % (check.entity_id,
                                                         check.id),
             data=data, kwargs=kwargs, coerce=self.get_check)
