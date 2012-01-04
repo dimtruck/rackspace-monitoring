@@ -158,7 +158,7 @@ class Alarm(object):
 class Check(object):
     def __init__(self, id, label, timeout, period, monitoring_zones,
                  target_alias, target_resolver, type, details,
-                 entity_id, driver):
+                 entity_id, disabled, driver):
         self.id = id
         self.label = label
         self.timeout = timeout
@@ -169,6 +169,7 @@ class Check(object):
         self.type = type
         self.details = details
         self.entity_id = entity_id
+        self.disabled = disabled
         self.driver = driver
 
     def update(self, data):

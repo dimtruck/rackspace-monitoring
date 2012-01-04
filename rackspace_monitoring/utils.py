@@ -13,9 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+__all__ = [
+    'to_underscore_separated',
+    'value_to_bool'
+]
+
 import re
 
 
 def to_underscore_separated(name):
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
     return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+def value_to_bool(string):
+    if isinstance(string, bool):
+        return string
+
+    if isinstance(string, int):
+        string = str(string)
+
+    if string.lower() in ['1', 'true']:
+        return True
+
+    return False

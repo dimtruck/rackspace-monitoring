@@ -27,6 +27,7 @@ from libcloud.common.base import Response
 
 from rackspace_monitoring.providers import Provider
 from rackspace_monitoring.utils import to_underscore_separated
+from rackspace_monitoring.utils import value_to_bool
 
 from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan, MonitoringZone,
@@ -536,6 +537,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             'target_resolver': obj.get('target_resolver', None),
             'type': obj['type'],
             'details': obj.get('details', {}),
+            'disabled': value_to_bool(obj.get('disabled', '0')),
             'driver': self,
             'entity_id': value_dict['entity_id']})
 
@@ -553,10 +555,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'label': kwargs.get('label'),
                 'timeout': kwargs.get('timeout', 29),
                 'period': kwargs.get('period', 30),
-                "monitoring_zones_poll": kwargs.get('monitoring_zones', []),
-                "target_alias": kwargs.get('target_alias'),
-                "target_resolver": kwargs.get('target_resolver'),
+                'monitoring_zones_poll': kwargs.get('monitoring_zones', None),
+                'target_alias': kwargs.get('target_alias'),
+                'target_resolver': kwargs.get('target_resolver'),
                 'type': kwargs.get('type'),
+                'disabled': kwargs.get('disabled', None),
                 'details': kwargs.get('details'),
                 }
 
