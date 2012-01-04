@@ -57,9 +57,9 @@ class TestCommand(Command):
     def _run_tests(self):
         secrets = pjoin(self._dir, 'test', 'secrets.py')
         if not os.path.isfile(secrets):
-            print('Missing "mock" library. mock is library is needed '
-                 'to run the tests. You can install it using pip: '
-                 'pip install mock')
+            print("Missing " + secrets)
+            print("Maybe you forgot to copy it from -dist:")
+            print("  cp test/secrets.py-dist test/secrets.py")
             sys.exit(1)
 
         pre_python26 = (sys.version_info[0] == 2
