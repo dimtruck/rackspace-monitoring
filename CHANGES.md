@@ -1,3 +1,7 @@
+rackspace-monitoring v0.2.3 - in development:
+
+* Add missing 'target_hostname' kwargs to *_check methods.
+
 rackspace-monitoring v0.2.2 - in development:
 
  * Fix a bug in update_check.

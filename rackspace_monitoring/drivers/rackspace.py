@@ -558,6 +558,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'monitoring_zones_poll': kwargs.get('monitoring_zones', None),
                 'target_alias': kwargs.get('target_alias'),
                 'target_resolver': kwargs.get('target_resolver'),
+                'target_hostname': kwargs.get('target_hostname'),
                 'type': kwargs.get('type'),
                 'disabled': kwargs.get('disabled', None),
                 'details': kwargs.get('details'),
