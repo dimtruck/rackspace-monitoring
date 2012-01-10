@@ -119,7 +119,7 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertTrue('timestamp' in result[0])
         self.assertTrue('notification_plan_id' in result[0])
-        self.assertTrue('computed_state' in result[0])
+        self.assertTrue('state' in result[0])
         self.assertTrue('transaction_id' in result[0])
         self.assertTrue('notification_results' in result[0])
 

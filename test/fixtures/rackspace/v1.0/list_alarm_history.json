@@ -4,7 +4,8 @@
             "timestamp": 1320885544875,
             "notification_plan_id": "npOne",
             "transaction_id": "sometransaction",
-            "computed_state": "WARNING",
+            "previous_state": "OK",
+            "state": "WARNING",
             "notification_results": [
                 {
                     "notification_id": "ntOne",
