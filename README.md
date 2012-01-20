@@ -30,12 +30,12 @@ Libcloud verifies server SSL certificate by default. This means you need to
 have the correct CA certificate files installed on your computer for this
 library to work.
 
-If Libcloud cannot find CA ertificate files, you will see an error similar to
-the one bellow:
+If Libcloud cannot find CA certificate files, you will see an error similar to
+the one below:
 
 `"RuntimeError: No CA Certificates were found in CA_CERTS_PATH."`
 
-This can be addresses by installing the CA certificate files. Bellow you can
+This can be addressed by installing the CA certificate files. Below you can
 find the names of the packages which include CA certificate files.
 
 * **openssl** on CentOS/Fedora (yum)
@@ -67,7 +67,7 @@ Where version is one of:
 
 `python setup.py pep8`
 
-## Genrating code coverage report
+## Generating code coverage report
 
 `python setup.py coverage`
 
