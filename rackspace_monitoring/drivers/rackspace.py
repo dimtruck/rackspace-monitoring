@@ -558,8 +558,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
                 'label': kwargs.get('label'),
-                'timeout': kwargs.get('timeout', 29),
-                'period': kwargs.get('period', 30),
                 'monitoring_zones_poll': kwargs.get('monitoring_zones', None),
                 'target_alias': kwargs.get('target_alias'),
                 'target_resolver': kwargs.get('target_resolver'),
@@ -568,6 +566,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'disabled': kwargs.get('disabled', None),
                 'details': kwargs.get('details'),
                 }
+
+        if 'period' in kwargs:
+            data['period'] = kwargs['period']
+
+        if 'timeout' in kwargs:
+            data['timeout'] = kwargs['timeout']
 
         for k in data.keys():
             if data[k] is not None:
