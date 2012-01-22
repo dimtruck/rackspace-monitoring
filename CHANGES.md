@@ -1,4 +1,4 @@
-rackspace-monitoring v0.2.3 - in development:
+rackspace-monitoring v0.2.3 - 2011-01-21:
 
 * Update parsing an object if from the Location header so it work with the new
   URLs which contain tenant ids.
