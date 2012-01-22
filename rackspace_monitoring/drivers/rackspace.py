@@ -240,7 +240,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _url_to_obj_ids(self, url):
         rv = {}
         rp = self.connection.request_path
+
         path = urlparse.urlparse(url).path
+        # removed duplicated slashes
+        path = path.replace('//', '/')
 
         if path.startswith(rp):
             # remove version string stuff
@@ -248,7 +251,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         chunks = path.split('/')[1:]
 
-        for i in range(0, len(chunks), 2):
+        # We start from 1 because we want to ignore tenant id which is first
+        # part of the url component
+        for i in range(1, len(chunks), 2):
             chunk = chunks[i]
 
             if not chunk:
