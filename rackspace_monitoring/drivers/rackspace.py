@@ -464,7 +464,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                             kwargs=kwargs)
 
     def update_notification(self, notification, data, **kwargs):
-        return self._update("/notifications/%s" % (notification.id),
+        return self._update('/notifications/%s' % (notification.id),
             data=data, kwargs=kwargs, coerce=self.get_notification)
 
     def create_notification(self, **kwargs):
@@ -476,6 +476,20 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return self._create("/notifications", data=data,
                             coerce=self.get_notification)
+
+    def test_existing_notification(self, notification):
+        resp = self.connection.request('/notifications/%s/test' % (notification.id),
+                                       method='POST')
+        return resp.object
+
+    def test_notification(self, **kwargs):
+        data = {'who': kwargs.get('who'),
+                'why': kwargs.get('why'),
+                'type': kwargs.get('type'),
+                'details': kwargs.get('details')}
+        resp = self.connection.request('/test-notification', method='POST', data=data)
+        return resp.object
+
 
     ####################
     ## Notification Plan
