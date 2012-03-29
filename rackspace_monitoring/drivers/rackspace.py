@@ -50,6 +50,8 @@ class RackspaceMonitoringValidationError(LibcloudError):
         self.details = details
         super(RackspaceMonitoringValidationError, self).__init__(value=message,
                                                                  driver=driver)
+    def __str__(self):
+        return self.__repr__()
 
     def __repr__(self):
         string = '<ValidationError type=%s, ' % (self.type)
@@ -64,6 +66,9 @@ class LatestAlarmState(object):
         self.alarm_id = alarm_id
         self.timestamp = timestamp
         self.state = state
+
+    def __str__(self):
+        return self.__repr__()
 
     def __repr__(self):
         return ('<LatestAlarmState: entity_id=%s, check_id=%s, alarm_id=%s, '
