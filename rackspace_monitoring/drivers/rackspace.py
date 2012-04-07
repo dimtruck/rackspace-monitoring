@@ -183,9 +183,13 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
         self.connection._populate_hosts_and_request_paths()
-        tenant_id = self.connection.tenant_ids['compute']
-        self.connection._force_base_url = '%s/%s' % (
-                self.connection._force_base_url, tenant_id)
+        ep = self.connection.service_catalog.get_endpoint(name='cloudServers',
+                                               service_type='compute',
+                                               region=None)
+
+        tenant_id = ep['tenantId']
+        self.connection._ex_force_base_url = '%s/%s' % (
+                self._ex_force_base_url, tenant_id)
 
     def _ex_connection_class_kwargs(self):
         rv = {}
