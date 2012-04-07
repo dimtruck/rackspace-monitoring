@@ -1,10 +1,23 @@
-rackspace-monitoring v0.2.3 - 2011-01-21:
+rackspace-monitoring v0.2.6 - in development:
+
+* Modify the connection class is it works with Libcloud 0.9.0 and above
+
+rackspace-monitoring v0.2.5 - 2012-04-04:
+
+* Change apache-libcloud dependency version to be < 0.9.0
+
+rackspace-monitoring v0.2.4 - 2012-03-29:
+
+* Add __str__ method to validation error and latest alarm state class.
+* Add new test_notification and test_existing_notification method
+
+rackspace-monitoring v0.2.3 - 2012-01-21:
 
 * Update parsing an object if from the Location header so it work with the new
   URLs which contain tenant ids.
 * Add missing 'target_hostname' kwargs to *_check methods.
 
-rackspace-monitoring v0.2.2 - 2011-01-04:
+rackspace-monitoring v0.2.2 - 2012-01-04:
 
  * Fix a bug in update_check.
 
