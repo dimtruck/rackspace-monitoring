@@ -604,7 +604,14 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def test_check(self, entity, **kwargs):
         data = self._check_kwarg_to_data(kwargs)
-        resp = self.connection.request("/entities/%s/test-check" % (entity.id),
+        resp = self.connection.request('/entities/%s/test-check' % (entity.id),
+                                       method='POST',
+                                       data=data)
+        return resp.object
+
+    def test_existing_check(self, check, **kwargs):
+        resp = self.connection.request('/entities/%s/checks/%s/test' %
+                                       (check.entity_id, check.id),
                                        method='POST',
                                        data=data)
         return resp.object

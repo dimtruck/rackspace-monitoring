@@ -1,6 +1,7 @@
 rackspace-monitoring v0.2.6 - in development:
 
 * Modify the connection class is it works with Libcloud 0.9.0 and above
+* Add new `test_existing_check` method
 
 rackspace-monitoring v0.2.5 - 2012-04-04:
 
