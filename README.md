@@ -71,6 +71,10 @@ Where version is one of:
 
 `python setup.py coverage`
 
+# Build status
+
+[![Build Status](https://secure.travis-ci.org/racker/rackspace-monitoring.png)](http://travis-ci.org/racker/rackspace-monitoring)
+
 # Issues, Feedback
 
 Please use Github issue tracker or send an email to `cmbeta@rackspace.com`.
