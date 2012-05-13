@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+
+before_install: 
+  - cp test/secrets.py-dist test/secrets.py
+
+script: python setup.py test
+
+notifications:
+  email:
+    - tomaz+travisci@tomaz.me
