@@ -76,6 +76,21 @@ class LatestAlarmState(object):
                 (self.entity_id, self.check_id, self.alarm_id, self.state))
 
 
+class AgentToken(object):
+    def __init__(self, id, label, token):
+        self.id = id
+        self.label = label
+        self.token = token
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('<AgentToken: id=%s, label=%s, token=%s>' %
+                (self.id, self.label, self.token))
+
+
+
 class RackspaceMonitoringResponse(Response):
 
     valid_response_codes = [httplib.CONFLICT]
@@ -242,7 +257,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
               'alarms': 'alarm',
               'checks': 'check',
               'notifications': 'notification',
-              'notification_plans': 'notificationPlan'}
+              'notification_plans': 'notificationPlan',
+              'tokens': 'token'}
 
         return kv[name]
 
@@ -700,6 +716,36 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       'list_item_mapper': self._to_audit}
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    # Agent tokens
+
+    def list_agent_tokens(self):
+        value_dict = {'url': '/agent_tokens',
+                      'list_item_mapper': self._to_agent_token}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def get_agent_token(self, token_id):
+        url = "/agent_tokens/%s" % (token_id)
+        resp = self.connection.request(url)
+        return self._to_agent_token(resp.object, {})
+
+    def create_agent_token(self, label=None, **kwargs):
+        data = {'label': label,
+                'who': kwargs.get('who'),
+                'why': kwargs.get('why')}
+
+        return self._create('/agent_tokens', data=data,
+                            coerce=self.get_agent_token)
+
+    def delete_agent_token(self, agent_token, **kwargs):
+        return self._delete(url="/agent_tokens/%s" % (agent_token.id),
+                            kwargs=kwargs)
+
+    def _to_agent_token(self, agent_token, value_dict):
+        return AgentToken(id=agent_token['id'], label=agent_token['label'],
+                          token=agent_token['label'])
+        return agent_token
 
     #########
     ## Other
