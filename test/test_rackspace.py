@@ -183,6 +183,14 @@ class RackspaceTests(unittest.TestCase):
         notification_plan = self.driver.list_notification_plans()[0]
         notification_plan.delete()
 
+    def test_list_agent_tokens(self):
+      tokens = self.driver.list_agent_tokens()
+      self.assertEqual(len(tokens), 11)
+
+    def test_delete_agent_token(self):
+        agent_token = self.driver.list_agent_tokens()[0]
+        self.assertTrue(self.driver.delete_agent_token(agent_token=agent_token))
+
 
 class RackspaceMockHttp(MockHttpTestCase):
     auth_fixtures = MonitoringFileFixtures('rackspace/auth')
@@ -312,6 +320,18 @@ class RackspaceMockHttp(MockHttpTestCase):
                     httplib.responses[httplib.NO_CONTENT])
 
         raise NotImplementedError('')
+
+    def _23213_agent_tokens_at28OJNsRB(self, method, url, body, headers):
+      if method == 'DELETE':
+            body = ''
+            return (httplib.NO_CONTENT, body, self.json_content_headers,
+                    httplib.responses[httplib.NO_CONTENT])
+
+    def _23213_agent_tokens(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_tokens.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
 
 
 if __name__ == '__main__':
