@@ -183,9 +183,12 @@ class RackspaceTests(unittest.TestCase):
         notification_plan = self.driver.list_notification_plans()[0]
         notification_plan.delete()
 
+    def test_create_agent_tokens(self):
+        self.driver.create_agent_token()
+
     def test_list_agent_tokens(self):
-      tokens = self.driver.list_agent_tokens()
-      self.assertEqual(len(tokens), 11)
+        tokens = self.driver.list_agent_tokens()
+        self.assertEqual(len(tokens), 11)
 
     def test_delete_agent_token(self):
         agent_token = self.driver.list_agent_tokens()[0]
@@ -330,6 +333,15 @@ class RackspaceMockHttp(MockHttpTestCase):
     def _23213_agent_tokens(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_tokens.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+        elif method == 'POST':
+            return (httplib.CREATED, '', {'Location': 'http://127.0.0.1:8000/v1.0/1234/agent_tokens/at12345'},  
+                    httplib.responses[httplib.CREATED])
+
+    def _23213_agent_tokens_at12345(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_tokens_at12345.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 

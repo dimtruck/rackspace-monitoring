@@ -254,6 +254,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _plural_to_singular(self, name):
         kv = {'entities': 'entity',
+              'agent_tokens': 'agent_token',
               'alarms': 'alarm',
               'checks': 'check',
               'notifications': 'notification',
@@ -276,9 +277,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         chunks = path.split('/')[1:]
 
-        # We start from 1 because we want to ignore tenant id which is first
-        # part of the url component
-        for i in range(1, len(chunks), 2):
+        for i in range(0, len(chunks), 2):
             chunk = chunks[i]
 
             if not chunk:
@@ -725,8 +724,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def get_agent_token(self, token_id):
-        url = "/agent_tokens/%s" % (token_id)
+    def get_agent_token(self, agent_token_id):
+        url = "/agent_tokens/%s" % (agent_token_id)
         resp = self.connection.request(url)
         return self._to_agent_token(resp.object, {})
 
@@ -745,7 +744,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_agent_token(self, agent_token, value_dict):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
                           token=agent_token['label'])
-        return agent_token
 
     #########
     ## Other
