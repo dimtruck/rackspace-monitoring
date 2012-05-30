@@ -191,6 +191,26 @@ class RackspaceTests(unittest.TestCase):
         agent_token = self.driver.list_agent_tokens()[0]
         self.assertTrue(self.driver.delete_agent_token(agent_token=agent_token))
 
+    def test__url_to_obj_ids(self):
+        pairs = [
+            ['http://127.0.0.1:50000/v1.0/7777/entities/enSTkViNvw',
+             {'entity_id': 'enSTkViNvw'}],
+            ['https://monitoring.api.rackspacecloud.com/v1.0/7777/entities/enSTkViNvw',
+             {'entity_id': 'enSTkViNvw'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/entities/enSTkViNvu',
+             {'entity_id': 'enSTkViNvu'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/alarms/alfoo',
+             {'alarm_id': 'alfoo'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/entities/enFoo/checks/chBar',
+             {'entity_id': 'enFoo', 'check_id': 'chBar'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/entities/enFoo/alarms/alBar',
+             {'entity_id': 'enFoo', 'alarm_id': 'alBar'}],
+        ]
+
+        for url, expected in pairs:
+            result = self.driver._url_to_obj_ids(url)
+            self.assertEqual(result, expected)
+
 
 class RackspaceMockHttp(MockHttpTestCase):
     auth_fixtures = MonitoringFileFixtures('rackspace/auth')
