@@ -738,7 +738,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _to_agent_token(self, agent_token, value_dict):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
-                          token=agent_token['label'])
+                          token=agent_token['token'])
         return agent_token
 
     #########
