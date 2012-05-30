@@ -16,6 +16,7 @@
 import sys
 import os
 import unittest
+import json
 from os.path import join as pjoin
 
 from libcloud.utils.py3 import httplib, urlparse
@@ -185,6 +186,9 @@ class RackspaceTests(unittest.TestCase):
 
     def test_list_agent_tokens(self):
       tokens = self.driver.list_agent_tokens()
+      fixture_tokens = json.loads(RackspaceMockHttp.fixtures.load('agent_tokens.json'))
+      first_token = fixture_tokens["values"][0]["token"]
+      self.assertEqual(tokens[0].token, first_token)
       self.assertEqual(len(tokens), 11)
 
     def test_delete_agent_token(self):
