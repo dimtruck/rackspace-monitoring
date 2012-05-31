@@ -1,3 +1,8 @@
+rackspace-monitoring v0.2.7 - 2012-05-31:
+
+* Fix agent token creation.
+  [Ryan Philips]
+
 rackspace-monitoring v0.2.7 - 2012-05-30:
 
 * Fix a bug with parsing object id from the URL in the response header which
