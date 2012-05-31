@@ -254,6 +254,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _plural_to_singular(self, name):
         kv = {'entities': 'entity',
+              'agent_tokens': 'agent_token',
               'alarms': 'alarm',
               'checks': 'check',
               'notifications': 'notification',
@@ -719,8 +720,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def get_agent_token(self, token_id):
-        url = "/agent_tokens/%s" % (token_id)
+    def get_agent_token(self, agent_token_id):
+        url = "/agent_tokens/%s" % (agent_token_id)
         resp = self.connection.request(url)
         return self._to_agent_token(resp.object, {})
 
@@ -739,7 +740,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_agent_token(self, agent_token, value_dict):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
                           token=agent_token['token'])
-        return agent_token
 
     #########
     ## Other
