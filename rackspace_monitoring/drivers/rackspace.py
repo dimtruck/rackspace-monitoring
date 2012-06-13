@@ -800,6 +800,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def ex_traceroute(self, monitoring_zone, target, target_resolver='IPv4'):
+        data = {'target': target, 'target_resolver': target_resolver}
+        path = '/monitoring_zones/%s/traceroute' % (monitoring_zone.id)
+        resp = self.connection.request(path, data=data, method='POST').object
+        return resp['result']
+
     def _to_latest_alarm_state(self, obj, value_dict):
         return LatestAlarmState(entity_id=obj['entity_id'],
                 check_id=obj['check_id'], alarm_id=obj['alarm_id'],

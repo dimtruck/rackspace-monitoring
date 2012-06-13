@@ -202,6 +202,14 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(monitoring_zone.label, 'ord')
         self.assertEqual(monitoring_zone.country_code, 'US')
 
+    def test_ex_traceroute(self):
+        monitoring_zone = self.driver.list_monitoring_zones()[0]
+        result = self.driver.ex_traceroute(monitoring_zone=monitoring_zone,
+                                           target='google.com')
+        self.assertEqual(result[0]['number'], 1)
+        self.assertEqual(result[0]['rtts'], [0.572, 0.586, 0.683])
+        self.assertEqual(result[0]['ip'], '50.57.61.2')
+
     def test__url_to_obj_ids(self):
         pairs = [
             ['http://127.0.0.1:50000/v1.0/7777/entities/enSTkViNvw',
@@ -240,6 +248,12 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _23213_monitoring_zones_mzord(self, method, url, body, headers):
         body = self.fixtures.load('get_monitoring_zone.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_monitoring_zones_mzxJ4L2IU_traceroute(self, method, url, body,
+                                                     headers):
+        body = self.fixtures.load('ex_traceroute.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
