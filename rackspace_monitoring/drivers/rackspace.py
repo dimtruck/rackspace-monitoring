@@ -378,7 +378,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return NotificationType(id=obj['id'],
                          fields=obj.get('fields', []))
 
-    def _to_monitoring_zone(self, obj, value_dict):
+    def _to_monitoring_zone(self, obj, value_dict=None):
         return MonitoringZone(id=obj['id'], label=obj['label'],
                               country_code=obj['country_code'],
                               source_ips=obj['source_ips'],
@@ -388,6 +388,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         value_dict = {'url': '/monitoring_zones',
                        'list_item_mapper': self._to_monitoring_zone}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def get_monitoring_zone(self, monitoring_zone_id):
+        url = '/monitoring_zones/%s' % (monitoring_zone_id)
+        resp = self.connection.request(url).object
+        return self._to_monitoring_zone(obj=resp)
 
     ##########
     ## Alarms

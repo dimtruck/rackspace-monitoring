@@ -195,6 +195,13 @@ class RackspaceTests(unittest.TestCase):
         agent_token = self.driver.list_agent_tokens()[0]
         self.assertTrue(self.driver.delete_agent_token(agent_token=agent_token))
 
+    def test_get_monitoring_zone(self):
+        monitoring_zone = self.driver \
+                              .get_monitoring_zone(monitoring_zone_id='mzord')
+        self.assertEqual(monitoring_zone.id, 'mzord')
+        self.assertEqual(monitoring_zone.label, 'ord')
+        self.assertEqual(monitoring_zone.country_code, 'US')
+
     def test__url_to_obj_ids(self):
         pairs = [
             ['http://127.0.0.1:50000/v1.0/7777/entities/enSTkViNvw',
@@ -228,6 +235,11 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _23213_monitoring_zones(self, method, url, body, headers):
         body = self.fixtures.load('monitoring_zones.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_monitoring_zones_mzord(self, method, url, body, headers):
+        body = self.fixtures.load('get_monitoring_zone.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
