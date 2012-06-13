@@ -1,3 +1,8 @@
+rackspace-monitoring v0.2.8 - 2012-06-13:
+
+* Add get_monitoring_zone method.
+* Add ex_traceroute method.
+
 rackspace-monitoring v0.2.7 - 2012-05-31:
 
 * Fix agent token creation.
