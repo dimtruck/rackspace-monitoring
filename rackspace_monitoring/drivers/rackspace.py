@@ -56,7 +56,7 @@ class RackspaceMonitoringValidationError(LibcloudError):
     def __repr__(self):
         string = '<ValidationError type=%s, ' % (self.type)
         string += 'message="%s", details=%s>' % (self.message, self.details)
-        return string
+        return string.encode('utf-8')
 
 
 class LatestAlarmState(object):
@@ -73,7 +73,8 @@ class LatestAlarmState(object):
     def __repr__(self):
         return ('<LatestAlarmState: entity_id=%s, check_id=%s, alarm_id=%s, '
                 'state=%s ...>' %
-                (self.entity_id, self.check_id, self.alarm_id, self.state))
+                (self.entity_id, self.check_id, self.alarm_id, self.state)) \
+                .encode('utf-8')
 
 
 class AgentToken(object):
@@ -87,7 +88,7 @@ class AgentToken(object):
 
     def __repr__(self):
         return ('<AgentToken: id=%s, label=%s, token=%s>' %
-                (self.id, self.label, self.token))
+                (self.id, self.label, self.token)).encode('utf-8')
 
 
 

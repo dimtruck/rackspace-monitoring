@@ -35,7 +35,7 @@ class MonitoringZone(object):
 
     def __repr__(self):
         return ('<MonitoringZone: id=%s label=%s provider=%s ...>' %
-                (self.id, self.label, self.driver.name))
+                (self.id, self.label, self.driver.name)).encode('utf-8')
 
 
 class Entity(object):
@@ -71,7 +71,7 @@ class Entity(object):
 
     def __repr__(self):
         return ('<Entity: id=%s label=%s provider=%s ...>' %
-                (self.id, self.label, self.driver.name))
+                (self.id, self.label, self.driver.name)).encode('utf-8')
 
 
 class Notification(object):
@@ -90,7 +90,7 @@ class Notification(object):
 
     def __repr__(self):
         return ('<Notification: id=%s, label=%s, type=%s ...>' % (self.id,
-                 self.label, self.type))
+                 self.label, self.type)).encode('utf-8')
 
 
 class NotificationPlan(object):
@@ -113,7 +113,7 @@ class NotificationPlan(object):
         return self.driver.delete_notification_plan(self)
 
     def __repr__(self):
-        return ('<NotificationPlan: id=%s...>' % (self.id))
+        return ('<NotificationPlan: id=%s...>' % (self.id)).encode('utf-8')
 
 
 class CheckType(object):
@@ -123,7 +123,7 @@ class CheckType(object):
         self.fields = fields
 
     def __repr__(self):
-        return ('<CheckType: id=%s ...>' % (self.id))
+        return ('<CheckType: id=%s ...>' % (self.id)).encode('utf-8')
 
 
 class NotificationType(object):
@@ -132,7 +132,7 @@ class NotificationType(object):
         self.fields = fields
 
     def __repr__(self):
-        return ('<NotificationType: id=%s ...>' % (self.id))
+        return ('<NotificationType: id=%s ...>' % (self.id)).encode('utf-8')
 
 
 class Alarm(object):
@@ -152,7 +152,7 @@ class Alarm(object):
         return self.driver.delete_alarm(self)
 
     def __repr__(self):
-        return ('<Alarm: id=%s ...>' % (self.id))
+        return ('<Alarm: id=%s ...>' % (self.id)).encode('utf-8')
 
 
 class Check(object):
@@ -179,7 +179,7 @@ class Check(object):
         return self.driver.delete_check(self)
 
     def __repr__(self):
-        return ('<Check: id=%s label=%s...>' % (self.id, self.label))
+        return ('<Check: id=%s label=%s...>' % (self.id, self.label)).encode('utf-8')
 
 
 class AlarmChangelog(object):
@@ -196,7 +196,7 @@ class AlarmChangelog(object):
 
     def __repr__(self):
         return ('<AlarmChangelog: id=%s alarm_id=%s, state=%s...>' % (
-          self.id, self.alarm_id, self.state))
+          self.id, self.alarm_id, self.state)).encode('utf-8')
 
 
 class MonitoringDriver(object):
