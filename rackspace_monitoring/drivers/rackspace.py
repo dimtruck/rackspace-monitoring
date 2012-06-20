@@ -255,6 +255,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _plural_to_singular(self, name):
         kv = {'entities': 'entity',
+              'agent_tokens': 'agent_token',
               'alarms': 'alarm',
               'checks': 'check',
               'notifications': 'notification',
@@ -265,21 +266,15 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _url_to_obj_ids(self, url):
         rv = {}
-        rp = self.connection.request_path
-
         path = urlparse.urlparse(url).path
         # removed duplicated slashes
         path = path.replace('//', '/')
 
-        if path.startswith(rp):
-            # remove version string stuff
-            path = path[len(rp):]
-
         chunks = path.split('/')[1:]
 
-        # We start from 1 because we want to ignore tenant id which is first
-        # part of the url component
-        for i in range(1, len(chunks), 2):
+        # We start from 2 because we want to ignore version and tenant id 
+        # which are firest and second part of the url component
+        for i in range(2, len(chunks), 2):
             chunk = chunks[i]
 
             if not chunk:
@@ -384,7 +379,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return NotificationType(id=obj['id'],
                          fields=obj.get('fields', []))
 
-    def _to_monitoring_zone(self, obj, value_dict):
+    def _to_monitoring_zone(self, obj, value_dict=None):
         return MonitoringZone(id=obj['id'], label=obj['label'],
                               country_code=obj['country_code'],
                               source_ips=obj['source_ips'],
@@ -394,6 +389,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         value_dict = {'url': '/monitoring_zones',
                        'list_item_mapper': self._to_monitoring_zone}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def get_monitoring_zone(self, monitoring_zone_id):
+        url = '/monitoring_zones/%s' % (monitoring_zone_id)
+        resp = self.connection.request(url).object
+        return self._to_monitoring_zone(obj=resp)
 
     ##########
     ## Alarms
@@ -726,8 +726,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def get_agent_token(self, token_id):
-        url = "/agent_tokens/%s" % (token_id)
+    def get_agent_token(self, agent_token_id):
+        url = "/agent_tokens/%s" % (agent_token_id)
         resp = self.connection.request(url)
         return self._to_agent_token(resp.object, {})
 
@@ -745,8 +745,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def _to_agent_token(self, agent_token, value_dict):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
-                          token=agent_token['label'])
-        return agent_token
+                          token=agent_token['token'])
 
     #########
     ## Other
@@ -801,6 +800,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       'list_item_mapper': self._to_overview_obj}
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def ex_traceroute(self, monitoring_zone, target, target_resolver='IPv4'):
+        data = {'target': target, 'target_resolver': target_resolver}
+        path = '/monitoring_zones/%s/traceroute' % (monitoring_zone.id)
+        resp = self.connection.request(path, data=data, method='POST').object
+        return resp['result']
 
     def _to_latest_alarm_state(self, obj, value_dict):
         return LatestAlarmState(entity_id=obj['entity_id'],

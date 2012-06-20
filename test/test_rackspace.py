@@ -16,6 +16,7 @@
 import sys
 import os
 import unittest
+import json
 from os.path import join as pjoin
 
 from libcloud.utils.py3 import httplib, urlparse
@@ -185,11 +186,49 @@ class RackspaceTests(unittest.TestCase):
 
     def test_list_agent_tokens(self):
       tokens = self.driver.list_agent_tokens()
+      fixture_tokens = json.loads(RackspaceMockHttp.fixtures.load('agent_tokens.json'))
+      first_token = fixture_tokens["values"][0]["token"]
+      self.assertEqual(tokens[0].token, first_token)
       self.assertEqual(len(tokens), 11)
 
     def test_delete_agent_token(self):
         agent_token = self.driver.list_agent_tokens()[0]
         self.assertTrue(self.driver.delete_agent_token(agent_token=agent_token))
+
+    def test_get_monitoring_zone(self):
+        monitoring_zone = self.driver \
+                              .get_monitoring_zone(monitoring_zone_id='mzord')
+        self.assertEqual(monitoring_zone.id, 'mzord')
+        self.assertEqual(monitoring_zone.label, 'ord')
+        self.assertEqual(monitoring_zone.country_code, 'US')
+
+    def test_ex_traceroute(self):
+        monitoring_zone = self.driver.list_monitoring_zones()[0]
+        result = self.driver.ex_traceroute(monitoring_zone=monitoring_zone,
+                                           target='google.com')
+        self.assertEqual(result[0]['number'], 1)
+        self.assertEqual(result[0]['rtts'], [0.572, 0.586, 0.683])
+        self.assertEqual(result[0]['ip'], '50.57.61.2')
+
+    def test__url_to_obj_ids(self):
+        pairs = [
+            ['http://127.0.0.1:50000/v1.0/7777/entities/enSTkViNvw',
+             {'entity_id': 'enSTkViNvw'}],
+            ['https://monitoring.api.rackspacecloud.com/v1.0/7777/entities/enSTkViNvw',
+             {'entity_id': 'enSTkViNvw'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/entities/enSTkViNvu',
+             {'entity_id': 'enSTkViNvu'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/alarms/alfoo',
+             {'alarm_id': 'alfoo'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/entities/enFoo/checks/chBar',
+             {'entity_id': 'enFoo', 'check_id': 'chBar'}],
+            ['https://monitoring.api.rackspacecloud.com/v2.0/7777/entities/enFoo/alarms/alBar',
+             {'entity_id': 'enFoo', 'alarm_id': 'alBar'}],
+        ]
+
+        for url, expected in pairs:
+            result = self.driver._url_to_obj_ids(url)
+            self.assertEqual(result, expected)
 
 
 class RackspaceMockHttp(MockHttpTestCase):
@@ -204,6 +243,17 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _23213_monitoring_zones(self, method, url, body, headers):
         body = self.fixtures.load('monitoring_zones.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_monitoring_zones_mzord(self, method, url, body, headers):
+        body = self.fixtures.load('get_monitoring_zone.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_monitoring_zones_mzxJ4L2IU_traceroute(self, method, url, body,
+                                                     headers):
+        body = self.fixtures.load('ex_traceroute.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 

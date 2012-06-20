@@ -1,4 +1,19 @@
-rackspace-monitoring v0.2.6 - in development:
+rackspace-monitoring v0.2.9 - 2012-06-13:
+
+* Add get_monitoring_zone method.
+* Add ex_traceroute method.
+
+rackspace-monitoring v0.2.8 - 2012-05-31:
+
+* Fix agent token creation.
+  [Ryan Philips]
+
+rackspace-monitoring v0.2.7 - 2012-05-30:
+
+* Fix a bug with parsing object id from the URL in the response header which
+  could occur in some rare conditions.
+
+rackspace-monitoring v0.2.6 - 2012-05-29:
 
 * Modify the connection class is it works with Libcloud 0.9.0 and above
 * Add new `test_existing_check` method
