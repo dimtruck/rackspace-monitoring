@@ -126,8 +126,8 @@ class RackspaceTests(unittest.TestCase):
 
     def test_test_alarm(self):
         entity = self.driver.list_entities()[0]
-        criteria = ('if (metric[\"code\"] == \"404\") { return CRITICAL, \"not',
-                   'found\" } return OK')
+        criteria = ('if (metric[\"code\"] == \"404\") { return CRITICAL, ',
+                   ' \"not found\" } return OK')
         check_data = []
         result = self.driver.test_alarm(entity=entity, criteria=criteria,
                                         check_data=check_data)
@@ -185,15 +185,17 @@ class RackspaceTests(unittest.TestCase):
         notification_plan.delete()
 
     def test_list_agent_tokens(self):
-      tokens = self.driver.list_agent_tokens()
-      fixture_tokens = json.loads(RackspaceMockHttp.fixtures.load('agent_tokens.json'))
-      first_token = fixture_tokens["values"][0]["token"]
-      self.assertEqual(tokens[0].token, first_token)
-      self.assertEqual(len(tokens), 11)
+        tokens = self.driver.list_agent_tokens()
+        fixture = RackspaceMockHttp.fixtures.load('agent_tokens.json')
+        fixture_tokens = json.loads(fixture)
+        first_token = fixture_tokens["values"][0]["token"]
+        self.assertEqual(tokens[0].token, first_token)
+        self.assertEqual(len(tokens), 11)
 
     def test_delete_agent_token(self):
         agent_token = self.driver.list_agent_tokens()[0]
-        self.assertTrue(self.driver.delete_agent_token(agent_token=agent_token))
+        self.assertTrue(self.driver.delete_agent_token(
+          agent_token=agent_token))
 
     def test_get_monitoring_zone(self):
         monitoring_zone = self.driver \
@@ -399,7 +401,7 @@ class RackspaceMockHttp(MockHttpTestCase):
         raise NotImplementedError('')
 
     def _23213_agent_tokens_at28OJNsRB(self, method, url, body, headers):
-      if method == 'DELETE':
+        if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
                     httplib.responses[httplib.NO_CONTENT])
