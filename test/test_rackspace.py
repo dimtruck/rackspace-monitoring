@@ -230,6 +230,33 @@ class RackspaceTests(unittest.TestCase):
             result = self.driver._url_to_obj_ids(url)
             self.assertEqual(result, expected)
 
+    def test_force_base_url(self):
+        RackspaceMonitoringDriver.connectionCls.conn_classes = (
+                RackspaceMockHttp, RackspaceMockHttp)
+        RackspaceMonitoringDriver.connectionCls.auth_url = \
+                'https://auth.api.example.com/v1.1/'
+
+        RackspaceMockHttp.type = None
+        driver = RackspaceMonitoringDriver(key=RACKSPACE_PARAMS[0],
+                                           secret=RACKSPACE_PARAMS[1],
+                ex_force_base_url='http://www.todo.com')
+        driver.list_entities()
+        self.assertEqual(driver.connection._ex_force_base_url,
+                         'http://www.todo.com/23213')
+
+    def test_force_base_url_is_none(self):
+        RackspaceMonitoringDriver.connectionCls.conn_classes = (
+                RackspaceMockHttp, RackspaceMockHttp)
+        RackspaceMonitoringDriver.connectionCls.auth_url = \
+                'https://auth.api.example.com/v1.1/'
+
+        RackspaceMockHttp.type = None
+        driver = RackspaceMonitoringDriver(key=RACKSPACE_PARAMS[0],
+                                           secret=RACKSPACE_PARAMS[1])
+        driver.list_entities()
+        self.assertEqual(driver.connection._ex_force_base_url,
+                        'https://monitoring.api.rackspacecloud.com/v1.0/23213')
+
 
 class RackspaceMockHttp(MockHttpTestCase):
     auth_fixtures = MonitoringFileFixtures('rackspace/auth')
