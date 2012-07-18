@@ -38,7 +38,7 @@ from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
 
 API_VERSION = 'v1.0'
-API_URL = 'https://cmbeta.api.rackspacecloud.com/%s' % (API_VERSION)
+API_URL = 'https://monitoring.api.rackspacecloud.com/%s' % (API_VERSION)
 
 
 class RackspaceMonitoringValidationError(LibcloudError):
