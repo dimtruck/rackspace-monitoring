@@ -1,3 +1,8 @@
+rackspace-monitoring v0.2.10 - in development:
+
+- Fix a bug with forcing base_url in the driver constructor.
+  [Jessica Lucci]
+
 rackspace-monitoring v0.2.9 - 2012-06-13:
 
 * Add get_monitoring_zone method.

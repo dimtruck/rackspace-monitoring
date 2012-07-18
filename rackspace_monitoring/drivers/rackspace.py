@@ -205,7 +205,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         tenant_id = ep['tenantId']
         self.connection._ex_force_base_url = '%s/%s' % (
-                self._ex_force_base_url, tenant_id)
+                self.connection._ex_force_base_url, tenant_id)
 
     def _ex_connection_class_kwargs(self):
         rv = {}
