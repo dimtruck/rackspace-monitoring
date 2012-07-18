@@ -1,4 +1,4 @@
-rackspace-monitoring v0.2.10 - in development:
+rackspace-monitoring v0.2.10 - 2012-07-18:
 
 - Fix a bug with forcing base_url in the driver constructor.
   [Jessica Lucci]
