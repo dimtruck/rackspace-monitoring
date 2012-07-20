@@ -687,6 +687,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def get_entity_host_info(self, entity_id, info_type):
+        url = "/entities/%s/agent/host_info/%s" % (entity_id, info_type)
+        resp = self.connection.request(url)
+        return resp.object
+
     # Agent tokens
 
     def list_agent_tokens(self):
