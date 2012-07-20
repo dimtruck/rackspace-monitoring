@@ -33,7 +33,8 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan, MonitoringZone,
                                       Notification, CheckType, Alarm, Check,
                                       NotificationType, AlarmChangelog,
-                                      LatestAlarmState, Agent, AgentConnection)
+                                      LatestAlarmState, Agent, AgentToken,
+                                      AgentConnection)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
