@@ -32,7 +32,8 @@ from rackspace_monitoring.utils import value_to_bool
 from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       NotificationPlan, MonitoringZone,
                                       Notification, CheckType, Alarm, Check,
-                                      NotificationType, AlarmChangelog)
+                                      NotificationType, AlarmChangelog,
+                                      LatestAlarmState, Agent, AgentConnection)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -57,66 +58,6 @@ class RackspaceMonitoringValidationError(LibcloudError):
         string = '<ValidationError type=%s, ' % (self.type)
         string += 'message="%s", details=%s>' % (self.message, self.details)
         return string.encode('utf-8')
-
-
-class LatestAlarmState(object):
-    def __init__(self, entity_id, check_id, alarm_id, timestamp, state):
-        self.entity_id = entity_id
-        self.check_id = check_id
-        self.alarm_id = alarm_id
-        self.timestamp = timestamp
-        self.state = state
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return ('<LatestAlarmState: entity_id=%s, check_id=%s, alarm_id=%s, '
-                'state=%s ...>' %
-                (self.entity_id, self.check_id, self.alarm_id, self.state)) \
-                .encode('utf-8')
-
-
-class AgentToken(object):
-    def __init__(self, id, label, token):
-        self.id = id
-        self.label = label
-        self.token = token
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return ('<AgentToken: id=%s, label=%s, token=%s>' %
-                (self.id, self.label, self.token)).encode('utf-8')
-
-class Agent(object):
-    def __init__(self, id, last_connected):
-        self.id = id
-        self.last_connected = last_connected
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return ('<Agent: id=%s, last_connected=%s>' % 
-            (self.id, self.last_connected)).encode('utf-8')
-
-class AgentConnection(object):
-    def __init__(self, id, endpoint, agent_id, bundle_version, process_version, agent_ip):
-        self.id = id
-        self.endpoint = endpoint
-        self.agent_id = agent_id
-        self.bundle_version = bundle_version
-        self.process_version = process_version
-        self.agent_ip = agent_ip
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return ('<AgentConnection: id=%s, agent_id=%s>' % 
-            (self.id, self.agent_id)).encode('utf-8')
 
 
 class RackspaceMonitoringResponse(Response):
@@ -796,6 +737,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       'list_item_mapper': self._to_agent_connection}
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def get_agent_host_info(self, agent_id, info_type):
+        url = "/agents/%s/host_info/%s" % (agent_id, info_type)
+        resp = self.connection.request(url)
+        return resp.object
 
     #########
     ## Other
