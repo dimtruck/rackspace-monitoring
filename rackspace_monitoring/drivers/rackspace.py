@@ -90,6 +90,33 @@ class AgentToken(object):
         return ('<AgentToken: id=%s, label=%s, token=%s>' %
                 (self.id, self.label, self.token)).encode('utf-8')
 
+class Agent(object):
+    def __init__(self, id, last_connected):
+        self.id = id
+        self.last_connected = last_connected
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('<Agent: id=%s, last_connected=%s>' % 
+            (self.id, self.last_connected)).encode('utf-8')
+
+class AgentConnection(object):
+    def __init__(self, id, endpoint, agent_id, bundle_version, process_version, agent_ip):
+        self.id = id
+        self.endpoint = endpoint
+        self.agent_id = agent_id
+        self.bundle_version = bundle_version
+        self.process_version = process_version
+        self.agent_ip = agent_ip
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('<AgentConnection: id=%s, agent_id=%s>' % 
+            (self.id, self.agent_id)).encode('utf-8')
 
 
 class RackspaceMonitoringResponse(Response):
@@ -256,6 +283,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _plural_to_singular(self, name):
         kv = {'entities': 'entity',
               'agent_tokens': 'agent_token',
+              'agents': 'agent',
               'alarms': 'alarm',
               'checks': 'check',
               'notifications': 'notification',
@@ -746,6 +774,28 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_agent_token(self, agent_token, value_dict):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
                           token=agent_token['token'])
+
+    # Agent
+
+    def _to_agents(self, agent, value_dict):
+        return Agent(id=agent['id'], last_connected=agent['last_connected'])
+
+    def _to_agent_connection(self, conn, value_dict):
+        return AgentConnection(id=conn['id'], endpoint=conn['endpoint'],
+            agent_id=conn['agent_id'], bundle_version=conn['bundle_version'],
+            process_version=conn['process_version'], agent_ip=conn['agent_ip'])
+
+    def list_agents(self):
+        value_dict = {'url': '/agents',
+                      'list_item_mapper': self._to_agents}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def list_agent_connections(self, agent_id):
+        value_dict = {'url': "/agents/%s/connections" % (agent_id),
+                      'list_item_mapper': self._to_agent_connection}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     #########
     ## Other
