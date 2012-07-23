@@ -166,6 +166,56 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(result[0]['type_name'], 'local')
         self.assertEqual(result[0]['sys_type_name'], 'ext3')
 
+    def test_get_entity_host_info(self):
+        result = self.driver.get_entity_host_info('aaaaa', 'cpus')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['vendor'], 'AMD')
+        self.assertEqual(result[0]['name'], 'cpu.0')
+        self.assertEqual(result[0]['total_cores'], 1)
+
+        result = self.driver.get_entity_host_info('aaaaa', 'memory')
+        self.assertEqual(result['actual_free'], 2684153856)
+        self.assertEqual(result['free'], 236662784)
+        self.assertEqual(result['ram'], 4016)
+        self.assertEqual(result['total'], 4208316416)
+        self.assertEqual(result['used'], 3971653632)
+        self.assertEqual(result['used_percent'], 36.217869792422)
+
+        result = self.driver.get_entity_host_info('aaaaa', 'system')
+        self.assertEqual(result['name'], 'Linux')
+        self.assertEqual(result['arch'], 'x86_64')
+        self.assertEqual(result['version'], '2.6.32-33-server')
+        self.assertEqual(result['vendor'], 'Ubuntu')
+        self.assertEqual(result['vendor_version'], '10.04')
+        self.assertEqual(result['vendor_code_name'], 'lucid')
+        self.assertEqual(result['description'], 'Ubuntu 10.04')
+
+        result = self.driver.get_entity_host_info('aaaaa', 'network_interfaces')
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['address'], '127.0.0.1')
+        self.assertEqual(result[0]['broadcast'], '0.0.0.0')
+        self.assertEqual(result[1]['address'], '192.168.0.2')
+        self.assertEqual(result[1]['broadcast'], '192.168.0.255')
+
+        result = self.driver.get_entity_host_info('aaaaa', 'processes')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['pid'], 13702)
+        self.assertEqual(result[0]['time_sys'], 570)
+        self.assertEqual(result[0]['memory_page_faults'], 37742)
+
+        result = self.driver.get_entity_host_info('aaaaa', 'disks')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['queue'], 0.024919932106766)
+        self.assertEqual(result[0]['name'], '/')
+        self.assertEqual(result[0]['wtime'], 517366712)
+
+        result = self.driver.get_entity_host_info('aaaaa', 'filesystems')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['dir_name'], '/')
+        self.assertEqual(result[0]['dev_name'], '/dev/xvda1')
+        self.assertEqual(result[0]['type_name'], 'local')
+        self.assertEqual(result[0]['sys_type_name'], 'ext3')
+
     def test_ex_list_alarm_notification_history_checks(self):
         entity = self.driver.list_entities()[0]
         alarm = self.driver.list_alarms(entity=entity)[0]
@@ -524,6 +574,48 @@ class RackspaceMockHttp(MockHttpTestCase):
                     httplib.responses[httplib.OK])
 
     def _23213_agents_aaaaa_host_info_filesystems(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_filesystems.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_cpus(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_cpus.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_memory(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_memory.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_system(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_system.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_network_interfaces(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_network_interfaces.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_processes(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_processes.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_disks(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('agent_host_info_disks.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_host_info_filesystems(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_filesystems.json')
             return (httplib.OK, body, self.json_content_headers,
