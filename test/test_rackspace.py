@@ -150,8 +150,7 @@ class RackspaceTests(unittest.TestCase):
 
     def test_delete_entity_success(self):
         entity = self.driver.list_entities()[0]
-        result = self.driver.delete_entity(entity=entity,
-                                           ex_delete_children=False)
+        result = self.driver.delete_entity(entity=entity)
         self.assertTrue(result)
 
     def test_delete_entity_children_exist(self):
@@ -159,8 +158,7 @@ class RackspaceTests(unittest.TestCase):
         RackspaceMockHttp.type = 'CHILDREN_EXIST'
 
         try:
-            self.driver.delete_entity(entity=entity,
-                                      ex_delete_children=False)
+            self.driver.delete_entity(entity=entity)
         except RackspaceMonitoringValidationError:
             pass
         else:

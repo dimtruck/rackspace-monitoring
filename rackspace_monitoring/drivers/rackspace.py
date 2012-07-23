@@ -665,23 +665,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Entity(id=entity['id'], label=entity['label'],
                       extra=entity['metadata'], driver=self, ip_addresses=ips)
 
-    def delete_entity(self, entity, ex_delete_children=False, **kwargs):
-        try:
-            return self._delete(url="/entities/%s" % (entity.id),
-                                kwargs=kwargs)
-        except RackspaceMonitoringValidationError:
-            e = sys.exc_info()[1]
-            type = e.details['type']
-            if not ex_delete_children or e.type != 'childrenExistError':
-                raise e
-
-            if type == 'Check':
-                self.ex_delete_checks(entity=entity)
-            elif type == 'Alarm':
-                self.ex_delete_alarms(entity=entity)
-
-            return self.delete_entity(entity=entity, ex_delete_children=True,
-                                      **kwargs)
+    def delete_entity(self, entity, **kwargs):
+        return self._delete(url="/entities/%s" % (entity.id),
+                            kwargs=kwargs)
 
     def list_entities(self, ex_next_marker=None):
         value_dict = {'url': '/entities',
