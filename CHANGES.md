@@ -1,3 +1,10 @@
+rackspace-monitoring v0.3.0 - 2012-07-23:
+
+* Add new agent related methods.
+  [Ryan Phillips]
+
+* Remove `ex_delete_children` argument from the `delete_entity` method.
+
 rackspace-monitoring v0.2.10 - 2012-07-18:
 
 - Fix a bug with forcing base_url in the driver constructor.
