@@ -2,8 +2,7 @@
     "values": [
         {
             "id": "aldIpNY8t3",
-            "check_type": "remote.http",
-            "check_id": null,
+            "check_id": "chhJwYeArX",
             "criteria": "if (metric['status'] == 404) { return CRITICAL }",
             "notification_plan_id": "npIXxOAn5"
         }

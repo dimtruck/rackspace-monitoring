@@ -136,10 +136,10 @@ class NotificationType(object):
 
 
 class Alarm(object):
-    def __init__(self, id, type, criteria, driver, entity_id,
+    def __init__(self, id, check_id, criteria, driver, entity_id,
                  notification_plan_id=None):
         self.id = id
-        self.type = type
+        self.check_id = check_id
         self.criteria = criteria
         self.driver = driver
         self.notification_plan_id = notification_plan_id

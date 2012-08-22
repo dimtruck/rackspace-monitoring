@@ -375,7 +375,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return self._to_alarm(resp.object, {'entity_id': entity_id})
 
     def _to_alarm(self, alarm, value_dict):
-        return Alarm(id=alarm['id'], type=alarm['check_type'],
+        return Alarm(id=alarm['id'], check_id=alarm['check_id'],
             criteria=alarm['criteria'],
             notification_plan_id=alarm['notification_plan_id'],
             driver=self, entity_id=value_dict['entity_id'])
@@ -418,7 +418,6 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def create_alarm(self, entity, **kwargs):
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
-                'check_type': kwargs.get('check_type'),
                 'check_id': kwargs.get('check_id'),
                 'criteria': kwargs.get('criteria'),
                 'notification_plan_id': kwargs.get('notification_plan_id')}
