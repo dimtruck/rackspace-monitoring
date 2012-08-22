@@ -77,7 +77,7 @@ class RackspaceTests(unittest.TestCase):
         en = self.driver.list_entities()[0]
         result = list(self.driver.list_alarms(entity=en))
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0].type, 'remote.http')
+        self.assertEqual(result[0].check_id, 'chhJwYeArX')
         self.assertEqual(result[0].notification_plan_id, 'npIXxOAn5')
 
     def test_list_check_types(self):
