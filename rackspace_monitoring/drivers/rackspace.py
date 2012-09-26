@@ -716,7 +716,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_agent_connection(self, conn, value_dict):
         return AgentConnection(id=conn['id'], endpoint=conn['endpoint'],
             agent_id=conn['agent_id'], bundle_version=conn['bundle_version'],
-            process_version=conn['process_version'], agent_ip=conn['agent_ip'])
+            process_version=conn['process_version'], agent_ip=conn['agent_ip'],
+            guid=conn['guid'])
 
     def list_agents(self):
         value_dict = {'url': '/agents',
