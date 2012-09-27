@@ -34,7 +34,7 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       Notification, CheckType, Alarm, Check,
                                       NotificationType, AlarmChangelog,
                                       LatestAlarmState, Agent, AgentToken,
-                                      AgentConnection)
+                                      AgentConnection, Metric)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -52,6 +52,7 @@ class RackspaceMonitoringValidationError(LibcloudError):
         self.details = details
         super(RackspaceMonitoringValidationError, self).__init__(value=message,
                                                                  driver=driver)
+
     def __str__(self):
         return self.__repr__()
 
@@ -214,7 +215,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             else:
                 l = value_dict['object_mapper'](resp, value_dict)
             m = resp['metadata'].get('next_marker')
-            return l, m, m == None
+            return l, m, (m is None)
 
         body = json.loads(response.body)
 
@@ -242,7 +243,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         chunks = path.split('/')[1:]
 
-        # We start from 2 because we want to ignore version and tenant id 
+        # We start from 2 because we want to ignore version and tenant id
         # which are firest and second part of the url component
         for i in range(2, len(chunks), 2):
             chunk = chunks[i]
@@ -348,6 +349,15 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_notification_type(self, obj, value_dict):
         return NotificationType(id=obj['id'],
                          fields=obj.get('fields', []))
+
+    def _to_metrics(self, obj, value_dict=None):
+        return Metric(name=obj['name'], driver=self)
+
+    def list_metrics(self, entity_id, check_id, ex_next_marker=None):
+        value_dict = {'url': '/entities/%s/checks/%s/metrics' %
+                             (entity_id, check_id),
+                        'list_item_mapper': self._to_metrics}
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def _to_monitoring_zone(self, obj, value_dict=None):
         return MonitoringZone(id=obj['id'], label=obj['label'],
@@ -482,9 +492,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'why': kwargs.get('why'),
                 'type': kwargs.get('type'),
                 'details': kwargs.get('details')}
-        resp = self.connection.request('/test-notification', method='POST', data=data)
+        resp = self.connection.request('/test-notification', method='POST',
+                                       data=data)
         return resp.object
-
 
     ####################
     ## Notification Plan
@@ -544,7 +554,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Check(**{
             'id': obj['id'],
             'label': obj.get('label'),
-            'timeout': obj['timeout'],
+           'timeout': obj['timeout'],
             'period': obj['period'],
             'monitoring_zones': obj['monitoring_zones_poll'],
             'target_alias': obj.get('target_alias', None),

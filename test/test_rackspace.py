@@ -86,6 +86,13 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(result[0].id, 'remote.dns')
         self.assertTrue(result[0].is_remote)
 
+    def test_list_metrics(self):
+        en = self.driver.list_entities()[0]
+        ch = self.driver.list_checks(entity=en)[0]
+        result = list(self.driver.list_metrics(entity_id=en.id, check_id=ch.id))
+        self.assertEqual(len(result), 3)
+        self.assertEqual(result[0].name, 'mzGRD.constdbl')
+
     def test_list_notification_types(self):
         result = list(self.driver.list_notification_types())
         self.assertEqual(len(result), 1)
@@ -618,6 +625,13 @@ class RackspaceMockHttp(MockHttpTestCase):
             body = self.fixtures.load('agent_host_info_filesystems.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
+
+    def _23213_entities_en8B9YwUn6_checks_chhJwYeArX_metrics(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('metrics.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
 
 if __name__ == '__main__':
     sys.exit(unittest.main())
