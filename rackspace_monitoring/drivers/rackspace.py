@@ -554,7 +554,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Check(**{
             'id': obj['id'],
             'label': obj.get('label'),
-           'timeout': obj['timeout'],
+            'timeout': obj['timeout'],
             'period': obj['period'],
             'monitoring_zones': obj['monitoring_zones_poll'],
             'target_alias': obj.get('target_alias', None),
