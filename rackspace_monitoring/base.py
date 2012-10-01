@@ -126,6 +126,15 @@ class CheckType(object):
         return ('<CheckType: id=%s ...>' % (self.id)).encode('utf-8')
 
 
+class Metric(object):
+    def __init__(self, name, driver):
+        self.name = name
+        self.driver = driver
+
+    def __repr__(self):
+        return ('<Metric: name=%s ...>' % (self.name)).encode('utf-8')
+
+
 class NotificationType(object):
     def __init__(self, id, fields):
         self.id = id
@@ -179,7 +188,8 @@ class Check(object):
         return self.driver.delete_check(self)
 
     def __repr__(self):
-        return ('<Check: id=%s label=%s...>' % (self.id, self.label)).encode('utf-8')
+        return ('<Check: id=%s label=%s...>' %
+                (self.id, self.label)).encode('utf-8')
 
 
 class AlarmChangelog(object):
@@ -230,6 +240,7 @@ class AgentToken(object):
         return ('<AgentToken: id=%s, label=%s, token=%s>' %
                 (self.id, self.label, self.token)).encode('utf-8')
 
+
 class Agent(object):
     def __init__(self, id, last_connected):
         self.id = id
@@ -239,11 +250,13 @@ class Agent(object):
         return self.__repr__()
 
     def __repr__(self):
-        return ('<Agent: id=%s, last_connected=%s>' % 
+        return ('<Agent: id=%s, last_connected=%s>' %
             (self.id, self.last_connected)).encode('utf-8')
 
+
 class AgentConnection(object):
-    def __init__(self, id, endpoint, agent_id, bundle_version, process_version, agent_ip):
+    def __init__(self, id, endpoint, agent_id,
+                bundle_version, process_version, agent_ip):
         self.id = id
         self.endpoint = endpoint
         self.agent_id = agent_id
@@ -255,8 +268,9 @@ class AgentConnection(object):
         return self.__repr__()
 
     def __repr__(self):
-        return ('<AgentConnection: id=%s, agent_id=%s>' % 
+        return ('<AgentConnection: id=%s, agent_id=%s>' %
             (self.id, self.agent_id)).encode('utf-8')
+
 
 class MonitoringDriver(object):
     """
@@ -272,15 +286,15 @@ class MonitoringDriver(object):
         self.secure = secure
         args = [self.key]
 
-        if self.secret != None:
+        if self.secret is not None:
             args.append(self.secret)
 
         args.append(secure)
 
-        if host != None:
+        if host is not None:
             args.append(host)
 
-        if port != None:
+        if port is not None:
             args.append(port)
 
         self.connection = self.connectionCls(*args,
@@ -303,6 +317,10 @@ class MonitoringDriver(object):
     def list_check_types(self):
         raise NotImplementedError(
             'list_check_types not implemented for this driver')
+
+    def list_metrics(self):
+        raise NotImplementedError(
+            'list_metrics not implemented for this driver')
 
     def list_monitoring_zones(self):
         raise NotImplementedError(
