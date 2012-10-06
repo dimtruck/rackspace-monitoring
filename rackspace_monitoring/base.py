@@ -43,7 +43,7 @@ class Entity(object):
     Represents an entity to be monitored.
     """
 
-    def __init__(self, id, label, ip_addresses, driver, extra=None):
+    def __init__(self, id, label, ip_addresses, uri, driver, extra=None):
         """
         @type label: C{str}
         @param label: Object label (must be unique per container).
@@ -60,6 +60,7 @@ class Entity(object):
         self.id = id
         self.label = label
         self.extra = extra or {}
+        self.uri = uri
         self.ip_addresses = ip_addresses or []
         self.driver = driver
 
