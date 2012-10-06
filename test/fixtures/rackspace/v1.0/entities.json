@@ -13,12 +13,14 @@
             "id": "en8Xmk5lv1",
             "label": "foooo",
             "ip_addresses": {},
+            "uri": null,
             "metadata": {}
         },
         {
             "id": "enBq9glhau",
             "label": "foooo",
             "ip_addresses": {},
+            "uri": null,
             "metadata": {}
         },
         {
@@ -33,12 +35,14 @@
             "ip_addresses": {
                 "default": "86.58.76.208"
             },
+            "uri": null,
             "metadata": null
         },
         {
             "id": "enjoLD0Al3",
             "label": "foooo",
             "ip_addresses": {},
+            "uri": null,
             "metadata": {}
         }
     ],
