@@ -145,13 +145,14 @@ class NotificationType(object):
 
 
 class Alarm(object):
-    def __init__(self, id, check_id, criteria, driver, entity_id,
+    def __init__(self, id, check_id, criteria, driver, entity_id, label=None,
                  notification_plan_id=None):
         self.id = id
         self.check_id = check_id
         self.criteria = criteria
         self.driver = driver
         self.notification_plan_id = notification_plan_id
+        self.label = label
         self.entity_id = entity_id
 
     def update(self, data):
@@ -161,7 +162,7 @@ class Alarm(object):
         return self.driver.delete_alarm(self)
 
     def __repr__(self):
-        return ('<Alarm: id=%s ...>' % (self.id)).encode('utf-8')
+        return ('<Alarm: id=%s, label=%s ...>' % (self.id, self.label)).encode('utf-8')
 
 
 class Check(object):
