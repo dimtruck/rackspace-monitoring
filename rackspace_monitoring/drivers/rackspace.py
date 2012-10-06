@@ -641,7 +641,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         if ipaddrs is not None:
             for key in ipaddrs.keys():
                 ips.append((key, ipaddrs[key]))
-        return Entity(id=entity['id'], label=entity['label'],
+        return Entity(id=entity['id'], label=entity['label'], uri=entity['uri'],
                       extra=entity['metadata'], driver=self, ip_addresses=ips)
 
     def delete_entity(self, entity, **kwargs):
