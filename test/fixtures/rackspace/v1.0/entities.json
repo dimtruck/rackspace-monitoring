@@ -6,6 +6,7 @@
             "ip_addresses": {
                 "1": "127.0.0.1"
             },
+            "uri": "http://ffo.com/uri/bar/12312",
             "metadata": {}
         },
         {
