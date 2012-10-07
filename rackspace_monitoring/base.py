@@ -54,6 +54,9 @@ class Entity(object):
         @type ip_addresses: C{list}
         @param ip_addresses: List of String aliases to IP Addresses tuples.
 
+        @type uri: C{str}
+        @param uri: A non-user settable attribute that ties entities to foreign objects.
+
         @type driver: C{StorageDriver}
         @param driver: StorageDriver instance.
         """
