@@ -387,7 +387,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_alarm(self, alarm, value_dict):
         return Alarm(id=alarm['id'], check_id=alarm['check_id'],
             criteria=alarm['criteria'],
-            notification_plan_id=alarm['notification_plan_id'],
+            notification_plan_id=alarm.get('notification_plan_id', None), label=alarm.get('label', None),
             driver=self, entity_id=value_dict['entity_id'])
 
     def list_alarms(self, entity, ex_next_marker=None):
