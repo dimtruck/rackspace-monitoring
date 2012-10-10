@@ -347,7 +347,7 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'delete_check not implemented for this driver')
 
-    def delete_alarm(self, check):
+    def delete_alarm(self, alarm):
         raise NotImplementedError(
             'delete_alarm not implemented for this driver')
 
