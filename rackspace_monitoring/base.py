@@ -43,7 +43,7 @@ class Entity(object):
     Represents an entity to be monitored.
     """
 
-    def __init__(self, id, label, ip_addresses, uri, driver, extra=None):
+    def __init__(self, id, label, ip_addresses, uri, driver, agent_id=None, extra=None):
         """
         @type label: C{str}
         @param label: Object label (must be unique per container).
@@ -59,6 +59,9 @@ class Entity(object):
 
         @type driver: C{StorageDriver}
         @param driver: StorageDriver instance.
+
+        @type agent_id: C{str}
+        @param agent_id: Agent id, links and entity to an agent.
         """
         self.id = id
         self.label = label
@@ -66,6 +69,7 @@ class Entity(object):
         self.uri = uri
         self.ip_addresses = ip_addresses or []
         self.driver = driver
+        self.agent_id = agent_id
 
     def update(self, data):
         self.driver.update_entity(entity=self, data=data)

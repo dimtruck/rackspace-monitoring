@@ -643,7 +643,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             for key in ipaddrs.keys():
                 ips.append((key, ipaddrs[key]))
         return Entity(id=entity['id'], label=entity['label'], uri=entity.get('uri', None),
-                      extra=entity['metadata'], driver=self, ip_addresses=ips)
+                      extra=entity['metadata'], agent_id=entity.get('agent_id', None),
+                      driver=self, ip_addresses=ips)
 
     def delete_entity(self, entity, **kwargs):
         return self._delete(url="/entities/%s" % (entity.id),
@@ -662,6 +663,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'uri': kwargs.get('uri'),
                 'ip_addresses': kwargs.get('ip_addresses', {}),
                 'label': kwargs.get('label'),
+                'agent_id': kwargs.get('agent_id'),
                 'metadata': kwargs.get('extra', {})}
 
         return self._create("/entities", data=data, coerce=self.get_entity)
