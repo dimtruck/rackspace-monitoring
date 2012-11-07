@@ -173,6 +173,12 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(result[0]['type_name'], 'local')
         self.assertEqual(result[0]['sys_type_name'], 'ext3')
 
+    def test_get_entity_targets(self):
+        result = self.driver.get_entity_agent_targets('aaaaa', 'agent.disk')
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]['targets'][0], '/')
+        self.assertEqual(result[0]['targets'][1], '/dev')
+
     def test_get_entity_host_info(self):
         result = self.driver.get_entity_host_info('aaaaa', 'cpus')
         self.assertEqual(len(result), 1)
@@ -431,6 +437,15 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _23213_entities_en8B9YwUn6_checks(self, method, url, body, headers):
         body = self.fixtures.load('checks.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
+    def _23213_entities_aaaaa_agent_check_types_agent_disk_targets(self,
+                                                             method,
+                                                             url,
+                                                             body,
+                                                             headers):
+        body = self.fixtures.load('agent_check_types_agent_disk_targets.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
