@@ -697,6 +697,12 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         resp = self.connection.request(url)
         return resp.object
 
+    def get_entity_agent_targets(self, entity_id, check_type):
+        url = "/entities/%s/agent/check_types/%s/targets" % (entity_id,
+            check_type)
+        resp = self.connection.request(url)
+        return resp.object
+
     # Agent tokens
 
     def list_agent_tokens(self):
