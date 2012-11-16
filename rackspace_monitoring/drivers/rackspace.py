@@ -820,7 +820,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
     def ex_views_agent_host_info(self, agentIds, includes, ex_next_marker=None):
         value_dict = {'url': '/views/agent_host_info',
-                     # 'start_marker': ex_next_marker,
+                      'start_marker': ex_next_marker,
                       'list_item_mapper': self._to_agent_host_info_overview_obj}
 
         params = []
