@@ -824,10 +824,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       'list_item_mapper': self._to_agent_host_info_overview_obj}
 
         params = []
-        for agentId in agentIds:
-          params.append(('agentId', agentId))
-        for include in includes:
-          params.append(('include', include))
+        params.extend(('agentId', agentId) for agentId in agentIds)
+        params.extend(('include', include) for include in includes)
 
         value_dict['params'] = params
 
