@@ -818,6 +818,19 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def ex_views_agent_host_info(self, agentIds, includes, ex_next_marker=None):
+        value_dict = {'url': '/views/agent_host_info',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_agent_host_info_overview_obj}
+
+        params = []
+        params.extend(('agentId', agentId) for agentId in agentIds)
+        params.extend(('include', include) for include in includes)
+
+        value_dict['params'] = params
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
     def ex_traceroute(self, monitoring_zone, target, target_resolver='IPv4'):
         data = {'target': target, 'target_resolver': target_resolver}
         path = '/monitoring_zones/%s/traceroute' % (monitoring_zone.id)
@@ -828,6 +841,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LatestAlarmState(entity_id=obj['entity_id'],
                 check_id=obj['check_id'], alarm_id=obj['alarm_id'],
                 timestamp=obj['timestamp'], state=obj['state'])
+
+    def _to_agent_host_info_overview_obj(self, data, value_dict):
+        return {'agent_id': data['agent_id'],
+                'host_info': data['host_info']}
 
     def _to_overview_obj(self, data, value_dict):
         entity = self._to_entity(data['entity'], {})
