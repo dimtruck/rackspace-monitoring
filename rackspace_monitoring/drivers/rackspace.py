@@ -387,7 +387,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_alarm(self, alarm, value_dict):
         return Alarm(id=alarm['id'], check_id=alarm['check_id'],
             criteria=alarm['criteria'],
-            notification_plan_id=alarm['notification_plan_id'],
+            notification_plan_id=alarm.get('notification_plan_id', None), label=alarm.get('label', None),
             driver=self, entity_id=value_dict['entity_id'])
 
     def list_alarms(self, entity, ex_next_marker=None):
@@ -398,13 +398,17 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def list_alarm_changelog(self, ex_next_marker=None, entity=None):
+    def list_alarm_changelog(self, ex_next_marker=None, entity=None,
+            reverse=False):
         value_dict = {'url': '/changelogs/alarms',
                       'start_marker': ex_next_marker,
+                      'params': {},
                       'list_item_mapper': self._to_alarm_changelog}
         if entity is not None:
             value_dict['entity_id'] = entity.id
             value_dict['url'] += '?entityId=%s' % entity.id
+        if reverse:
+            value_dict['params']['reverse'] = reverse
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
@@ -646,7 +650,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             for key in ipaddrs.keys():
                 ips.append((key, ipaddrs[key]))
         return Entity(id=entity['id'], label=entity['label'], uri=entity.get('uri', None),
-                      extra=entity['metadata'], driver=self, ip_addresses=ips)
+                      extra=entity['metadata'], agent_id=entity.get('agent_id', None),
+                      driver=self, ip_addresses=ips)
 
     def delete_entity(self, entity, **kwargs):
         return self._delete(url="/entities/%s" % (entity.id),
@@ -665,6 +670,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'uri': kwargs.get('uri'),
                 'ip_addresses': kwargs.get('ip_addresses', {}),
                 'label': kwargs.get('label'),
+                'agent_id': kwargs.get('agent_id'),
                 'metadata': kwargs.get('extra', {})}
 
         return self._create("/entities", data=data, coerce=self.get_entity)
@@ -680,16 +686,24 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_audit(self, audit, value_dict):
         return audit
 
-    def list_audits(self, start_from=None, to=None):
+    def list_audits(self, start_from=None, to=None, reverse=False):
         # TODO: add start/end date support
         value_dict = {'url': '/audits',
                       'params': {'limit': 200},
                       'list_item_mapper': self._to_audit}
+        if reverse:
+            value_dict['params']['reverse'] = reverse
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def get_entity_host_info(self, entity_id, info_type):
         url = "/entities/%s/agent/host_info/%s" % (entity_id, info_type)
+        resp = self.connection.request(url)
+        return resp.object
+
+    def get_entity_agent_targets(self, entity_id, check_type):
+        url = "/entities/%s/agent/check_types/%s/targets" % (entity_id,
+            check_type)
         resp = self.connection.request(url)
         return resp.object
 
@@ -770,10 +784,15 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return resp
 
     def ex_list_alarm_notification_history(self, entity, alarm, check,
-                                           ex_next_marker=None):
-        value_dict = {'url': '/entities/%s/alarms/%s/notification_history/%s' %
-                              (entity.id, alarm.id, check.id),
-               'list_item_mapper': self._to_alarm_notification_history_obj}
+                                           ex_next_marker=None, reverse=False):
+        value_dict = {
+            'url': '/entities/%s/alarms/%s/notification_history/%s' %
+                   (entity.id, alarm.id, check.id),
+            'params': {},
+            'list_item_mapper': self._to_alarm_notification_history_obj}
+        if reverse:
+            value_dict['params']['reverse'] = reverse
+
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def _to_alarm_notification_history_obj(self, values, value_dict):
@@ -803,6 +822,19 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def ex_views_agent_host_info(self, agentIds, includes, ex_next_marker=None):
+        value_dict = {'url': '/views/agent_host_info',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_agent_host_info_overview_obj}
+
+        params = []
+        params.extend(('agentId', agentId) for agentId in agentIds)
+        params.extend(('include', include) for include in includes)
+
+        value_dict['params'] = params
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
     def ex_traceroute(self, monitoring_zone, target, target_resolver='IPv4'):
         data = {'target': target, 'target_resolver': target_resolver}
         path = '/monitoring_zones/%s/traceroute' % (monitoring_zone.id)
@@ -813,6 +845,10 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return LatestAlarmState(entity_id=obj['entity_id'],
                 check_id=obj['check_id'], alarm_id=obj['alarm_id'],
                 timestamp=obj['timestamp'], state=obj['state'])
+
+    def _to_agent_host_info_overview_obj(self, data, value_dict):
+        return {'agent_id': data['agent_id'],
+                'host_info': data['host_info']}
 
     def _to_overview_obj(self, data, value_dict):
         entity = self._to_entity(data['entity'], {})
