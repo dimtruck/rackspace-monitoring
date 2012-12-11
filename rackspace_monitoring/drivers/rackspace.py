@@ -34,7 +34,7 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                       Notification, CheckType, Alarm, Check,
                                       NotificationType, AlarmChangelog,
                                       LatestAlarmState, Agent, AgentToken,
-                                      AgentConnection, Metric)
+                                      AgentConnection, Metric, DataPoint)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -353,11 +353,23 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_metrics(self, obj, value_dict=None):
         return Metric(name=obj['name'], driver=self)
 
+    def _to_datapoints(self, obj, value_dict=None):
+        return DataPoint(name=obj['timestamp'], driver=self,
+                     average=obj['average'], numPoints=obj['numPoints'])
+
     def list_metrics(self, entity_id, check_id, ex_next_marker=None):
         value_dict = {'url': '/entities/%s/checks/%s/metrics' %
                              (entity_id, check_id),
                         'list_item_mapper': self._to_metrics}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def fetch_data_point(self, entity_id, check_id, metric_name, from_timestamp, to_timestamp, points=1):
+        value_dict = {'url': '/entities/%s/checks/%s/metrics/%s/plot' %
+                             (entity_id, check_id, metric_name),
+                      'params': {'from': from_timestamp, 'to': to_timestamp, 'points': points},
+                      'list_item_mapper': self._to_datapoints}
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
 
     def _to_monitoring_zone(self, obj, value_dict=None):
         return MonitoringZone(id=obj['id'], label=obj['label'],
