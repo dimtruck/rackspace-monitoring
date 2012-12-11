@@ -142,7 +142,7 @@ class Metric(object):
     def __repr__(self):
         return ('<Metric: name=%s ...>' % (self.name)).encode('utf-8')
 
-class Point(object):
+class DataPoint(object):
     def __init__(self, name, driver, average, numPoints):
         self.name = name
         self.driver = driver
@@ -150,7 +150,7 @@ class Point(object):
         self.numPoints = numPoints
 
     def __repr__(self):
-        return ('<Point: timestamp=%s ...>' % (self.name)).encode('utf-8')
+        return ('<DataPoint: timestamp=%s ...>' % (self.name)).encode('utf-8')
 
 
 class NotificationType(object):
