@@ -341,6 +341,10 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'list_metrics not implemented for this driver')
 
+    def fetch_data_point(self):
+        raise NotImplementedError(
+            'fetch_data_point not implemented for this driver')
+
     def list_monitoring_zones(self):
         raise NotImplementedError(
             'list_monitoring_zones not implemented for this driver')
