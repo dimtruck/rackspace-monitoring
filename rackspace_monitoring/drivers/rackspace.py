@@ -403,7 +403,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             driver=self, entity_id=value_dict['entity_id'])
 
     def list_alarms(self, entity, ex_next_marker=None):
-        value_dict = {'url': '/entities/%s/alarms' % (entity.id),
+        entity_id = entity.id if hasattr(entity, 'id') else entity
+        value_dict = {'url': '/entities/%s/alarms' % (entity_id),
                       'start_marker': ex_next_marker,
                       'list_item_mapper': self._to_alarm,
                       'entity_id': entity.id}
@@ -441,6 +442,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             data=data, kwargs=kwargs, coerce=self.get_alarm)
 
     def create_alarm(self, entity, **kwargs):
+        entity_id = entity.id if hasattr(entity, 'id') else entity
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
                 'label': kwargs.get('label'),
@@ -448,13 +450,14 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                 'criteria': kwargs.get('criteria'),
                 'notification_plan_id': kwargs.get('notification_plan_id')}
 
-        return self._create("/entities/%s/alarms" % (entity.id),
+        return self._create("/entities/%s/alarms" % (entity_id),
             data=data, coerce=self.get_alarm)
 
     def test_alarm(self, entity, **kwargs):
+        entity_id = entity.id if hasattr(entity, 'id') else entity
         data = {'criteria': kwargs.get('criteria'),
                 'check_data': kwargs.get('check_data')}
-        resp = self.connection.request("/entities/%s/test-alarm" % (entity.id),
+        resp = self.connection.request("/entities/%s/test-alarm" % (entity_id),
                                        method='POST',
                                        data=data)
         return resp.object
@@ -582,7 +585,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
             'entity_id': value_dict['entity_id']})
 
     def list_checks(self, entity, ex_next_marker=None):
-        value_dict = {'url': "/entities/%s/checks" % (entity.id),
+        entity_id = entity.id if hasattr(entity, 'id') else entity
+        value_dict = {'url': "/entities/%s/checks" % (entity_id),
                       'start_marker': ex_next_marker,
                       'list_item_mapper': self._to_check,
                       'entity_id': entity.id}
@@ -615,8 +619,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return filtered
 
     def test_check(self, entity, **kwargs):
+        entity_id = entity.id if hasattr(entity, 'id') else entity
         data = self._check_kwarg_to_data(kwargs)
-        resp = self.connection.request('/entities/%s/test-check' % (entity.id),
+        resp = self.connection.request('/entities/%s/test-check' % (entity_id),
                                        method='POST',
                                        data=data)
         return resp.object
@@ -628,8 +633,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return resp.object
 
     def create_check(self, entity, **kwargs):
+        entity_id = entity.id if hasattr(entity, 'id') else entity
         data = self._check_kwarg_to_data(kwargs)
-        return self._create("/entities/%s/checks" % (entity.id),
+        return self._create("/entities/%s/checks" % (entity_id),
             data=data, coerce=self.get_check)
 
     def update_check(self, check, data, **kwargs):
@@ -662,7 +668,8 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                       driver=self, ip_addresses=ips)
 
     def delete_entity(self, entity, **kwargs):
-        return self._delete(url="/entities/%s" % (entity.id),
+        entity_id = entity.id if hasattr(entity, 'id') else entity
+        return self._delete(url="/entities/%s" % (entity_id),
                             kwargs=kwargs)
 
     def list_entities(self, ex_next_marker=None):
@@ -786,16 +793,18 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     ####################
 
     def ex_list_alarm_notification_history_checks(self, entity, alarm):
+        entity_id = entity.id if hasattr(entity, 'id') else entity
         resp = self.connection.request(
                 '/entities/%s/alarms/%s/notification_history' %
-                                       (entity.id, alarm.id)).object
+                                       (entity_id, alarm.id)).object
         return resp
 
     def ex_list_alarm_notification_history(self, entity, alarm, check,
                                            ex_next_marker=None, reverse=False):
+        entity_id = entity.id if hasattr(entity, 'id') else entity
         value_dict = {
             'url': '/entities/%s/alarms/%s/notification_history/%s' %
-                   (entity.id, alarm.id, check.id),
+                   (entity_id, alarm.id, check.id),
             'params': {},
             'list_item_mapper': self._to_alarm_notification_history_obj}
         if reverse:
