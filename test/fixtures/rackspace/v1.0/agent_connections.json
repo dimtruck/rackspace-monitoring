@@ -2,6 +2,7 @@
     "values": [
         {
             "id": "cn0ElI4abc",
+            "guid": "FB339F2C-CB87-4462-9C86-61CFE5318983",
             "agent_id": "test.example.com",
             "endpoint": "lon3",
             "process_version": "b700f36f887349af95a6210a7b30a2e7f8ebda4a",
@@ -10,6 +11,7 @@
         },
         {
             "id": "cnAAAAAAAA",
+            "guid": "FB339F2C-CB87-4462-9C86-61CFE5318983",
             "agent_id": "test.example.com",
             "endpoint": "ord1",
             "process_version": "b700f36f887349af95a6210a7b30a2e7f8ebda4a",

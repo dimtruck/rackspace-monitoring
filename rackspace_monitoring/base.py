@@ -274,9 +274,10 @@ class Agent(object):
 
 
 class AgentConnection(object):
-    def __init__(self, id, endpoint, agent_id,
+    def __init__(self, id, guid, endpoint, agent_id,
                 bundle_version, process_version, agent_ip):
         self.id = id
+        self.guid = guid
         self.endpoint = endpoint
         self.agent_id = agent_id
         self.bundle_version = bundle_version
