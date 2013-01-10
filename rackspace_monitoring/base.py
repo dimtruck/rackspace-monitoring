@@ -274,9 +274,10 @@ class Agent(object):
 
 
 class AgentConnection(object):
-    def __init__(self, id, endpoint, agent_id,
+    def __init__(self, id, guid, endpoint, agent_id,
                 bundle_version, process_version, agent_ip):
         self.id = id
+        self.guid = guid
         self.endpoint = endpoint
         self.agent_id = agent_id
         self.bundle_version = bundle_version
@@ -287,8 +288,8 @@ class AgentConnection(object):
         return self.__repr__()
 
     def __repr__(self):
-        return ('<AgentConnection: id=%s, agent_id=%s>' %
-            (self.id, self.agent_id)).encode('utf-8')
+        return ('<AgentConnection: id=%s, agent_id=%s, guid=%s>' %
+            (self.id, self.agent_id, self.guid)).encode('utf-8')
 
 
 class MonitoringDriver(object):

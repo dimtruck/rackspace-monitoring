@@ -750,7 +750,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
         return Agent(id=agent['id'], last_connected=agent['last_connected'])
 
     def _to_agent_connection(self, conn, value_dict):
-        return AgentConnection(id=conn['id'], endpoint=conn['endpoint'],
+        return AgentConnection(id=conn['id'], guid=conn['guid'], endpoint=conn['endpoint'],
             agent_id=conn['agent_id'], bundle_version=conn['bundle_version'],
             process_version=conn['process_version'], agent_ip=conn['agent_ip'])
 
