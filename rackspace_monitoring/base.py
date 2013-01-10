@@ -288,8 +288,8 @@ class AgentConnection(object):
         return self.__repr__()
 
     def __repr__(self):
-        return ('<AgentConnection: id=%s, agent_id=%s>' %
-            (self.id, self.agent_id)).encode('utf-8')
+        return ('<AgentConnection: id=%s, agent_id=%s, guid=%s>' %
+            (self.id, self.agent_id, self.guid)).encode('utf-8')
 
 
 class MonitoringDriver(object):
