@@ -410,11 +410,15 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
-    def list_alarm_changelog(self, ex_next_marker=None, reverse=False):
+    def list_alarm_changelog(self, ex_next_marker=None, entity=None,
+            reverse=False):
         value_dict = {'url': '/changelogs/alarms',
                       'start_marker': ex_next_marker,
                       'params': {},
                       'list_item_mapper': self._to_alarm_changelog}
+        if entity is not None:
+            value_dict['entity_id'] = entity.id
+            value_dict['url'] += '?entityId=%s' % entity.id
         if reverse:
             value_dict['params']['reverse'] = reverse
 
