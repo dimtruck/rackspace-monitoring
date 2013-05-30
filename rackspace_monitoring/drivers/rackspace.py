@@ -257,7 +257,7 @@ class RackspaceMonitoringDriver(MonitoringDriver):
 
         return rv
 
-    def _create(self, url, data, coerce):
+    def _create(self, url, data, coerce, handler=None):
         params = {}
 
         for k in data.keys():
@@ -278,7 +278,9 @@ class RackspaceMonitoringDriver(MonitoringDriver):
                                        method='POST',
                                        params=params,
                                        data=data)
-        if resp.status == httplib.CREATED:
+        if handler is not None:
+            return handler(resp)
+        elif resp.status == httplib.CREATED:
             location = resp.headers.get('location')
             if not location:
                 raise LibcloudError('Missing location header')
@@ -747,6 +749,20 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     def _to_agent_token(self, agent_token, value_dict):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
                           token=agent_token['token'])
+
+
+    def _get_installer_headers(self, resp):
+        return {'shell_url': resp.headers.get('x-shell-installer-location'),
+                'json_url': resp.headers.get('location')}
+
+    def create_agent_installer(self, entity_id, **kwargs):
+        data = {'entity_id': entity_id,
+                'who': kwargs.get('who'),
+                'why': kwargs.get('why')}
+
+        return self._create('/agent_installers', data=data,
+                          coerce=None, handler=self._get_installer_headers)
+
 
     # Agent
 
