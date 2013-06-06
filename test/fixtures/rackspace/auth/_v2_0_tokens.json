@@ -47,6 +47,16 @@
                 ],
                 "name": "cloudServers",
                 "type": "compute"
+            },
+            {
+                "name": "cloudMonitoring",
+                "endpoints": [
+                    {
+                        "tenantId": "23213",
+                        "publicURL": "https://monitoring.api.rackspacecloud.com/v1.0/23213"
+                    }
+                ],
+                "type": "rax:monitor"
             }
         ],
         "user": {

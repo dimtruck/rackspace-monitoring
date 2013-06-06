@@ -167,10 +167,11 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         # Don't require user to pass in tenant id if specifying a custom api
         # url
         ex_force_base_url = kwargs.pop('ex_force_base_url', None)
+        ex_force_auth_token = kwargs.pop('ex_force_auth_token', None)
 
-        if ex_force_base_url:
+        if ex_force_base_url and not ex_force_auth_token:
             self.connection._populate_hosts_and_request_paths()
-            ep = self.connection.service_catalog\
+            ep = self.connection.service_catalog \
                      .get_endpoint(name=self.connection.service_name,
                                    service_type=self.connection.service_type,
                                    region=None)
