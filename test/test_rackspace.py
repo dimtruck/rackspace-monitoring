@@ -370,6 +370,23 @@ class RackspaceTests(unittest.TestCase):
         self.assertEqual(driver.connection._ex_force_base_url,
                          'http://www.todo.com')
 
+    def test_force_auth_token(self):
+        RackspaceMonitoringDriver.connectionCls.conn_classes = (
+                RackspaceMockHttp, RackspaceMockHttp)
+        RackspaceMonitoringDriver.connectionCls.auth_url = \
+                'https://auth.api.example.com/v1.1/'
+
+        RackspaceMockHttp.type = None
+        driver = RackspaceMonitoringDriver(key=RACKSPACE_PARAMS[0],
+                                           secret=RACKSPACE_PARAMS[1],
+                ex_force_base_url='http://www.todo.com',
+                ex_force_auth_token='matoken')
+        driver.list_entities()
+        self.assertEqual(driver.connection._ex_force_base_url,
+                         'http://www.todo.com')
+        self.assertEqual(driver.connection.auth_token,
+                         'matoken')
+
     def test_force_base_url_is_none(self):
         RackspaceMonitoringDriver.connectionCls.conn_classes = (
                 RackspaceMockHttp, RackspaceMockHttp)
