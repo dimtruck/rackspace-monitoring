@@ -161,6 +161,11 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     connectionCls = RackspaceMonitoringConnection
 
     def __init__(self, *args, **kwargs):
+        # Remove trailing slash from the ex_force_base_url
+        if 'ex_force_base_url' in kwargs:
+            if kwargs['ex_force_base_url'][-1] == '/':
+                kwargs['ex_force_base_url'] = kwargs['ex_force_base_url'][:-1]
+
         OpenStackDriverMixin.__init__(self, *args, **kwargs)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
