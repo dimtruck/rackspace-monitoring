@@ -1,3 +1,9 @@
+rackspace-monitoring v0.5.0 - in development
+
+* Use service catalog to determine the API endpoint url.
+* Allow user to specify auth token which is used for authentication by
+  passing ex_force_auth_token variable to the constructor.
+
 rackspace-monitoring v0.3.0 - 2012-07-23:
 
 * Add new agent related methods.
