@@ -164,6 +164,21 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         OpenStackDriverMixin.__init__(self, *args, **kwargs)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
+        # Don't require user to pass in tenant id if specifying a custom api
+        # url
+        ex_force_base_url = kwargs.pop('ex_force_base_url', None)
+
+        if ex_force_base_url:
+            self.connection._populate_hosts_and_request_paths()
+            ep = self.connection.service_catalog\
+                     .get_endpoint(name=self.connection.service_name,
+                                   service_type=self.connection.service_type,
+                                   region=None)
+
+            tenant_id = ep['tenantId']
+            self.connection._ex_force_base_url = '%s/%s' % (
+            self.connection._ex_force_base_url, tenant_id)
+
     def _ex_connection_class_kwargs(self):
         return self.openstack_connection_kwargs()
 
