@@ -173,7 +173,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
     def _initialize_connection_base_url(self, constructor_kwargs):
         # If user specifies a custom API url (ex_force_base_url variable),
-        # don't require him to pass in tenant it and automatically retrieve it
+        # don't require him to pass in tenant id and automatically retrieve it
         # from the service catalog.
         #
         # Note: If user specifies both ex_force_base_url and
