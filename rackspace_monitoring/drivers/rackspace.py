@@ -162,7 +162,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
     def __init__(self, *args, **kwargs):
         # Remove trailing slash from the ex_force_base_url
-        if 'ex_force_base_url' in kwargs:
+        if kwargs.get('ex_force_base_url', None) is not None:
             if kwargs['ex_force_base_url'][-1] == '/':
                 kwargs['ex_force_base_url'] = kwargs['ex_force_base_url'][:-1]
 
