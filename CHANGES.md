@@ -2,7 +2,7 @@ rackspace-monitoring v0.5.0 - in development
 
 * Use service catalog to determine the API endpoint url.
 * Allow user to specify auth token which is used for authentication by
-  passing ex_force_auth_token variable to the constructor.
+  passing `ex_force_auth_token` variable to the constructor.
 
 Note: if you specify `ex_force_auth_token` you also need to specify
 `ex_force_base_url` which must contain a full url including a tenant id
