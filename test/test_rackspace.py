@@ -368,7 +368,7 @@ class RackspaceTests(unittest.TestCase):
                 ex_force_base_url='http://www.todo.com')
         driver.list_entities()
         self.assertEqual(driver.connection._ex_force_base_url,
-                         'http://www.todo.com/23213')
+                         'http://www.todo.com')
 
     def test_force_base_url_is_none(self):
         RackspaceMonitoringDriver.connectionCls.conn_classes = (
@@ -380,8 +380,7 @@ class RackspaceTests(unittest.TestCase):
         driver = RackspaceMonitoringDriver(key=RACKSPACE_PARAMS[0],
                                            secret=RACKSPACE_PARAMS[1])
         driver.list_entities()
-        self.assertEqual(driver.connection._ex_force_base_url,
-                        'https://monitoring.api.rackspacecloud.com/v1.0/23213')
+        self.assertEqual(driver.connection._ex_force_base_url, None)
 
 
 class RackspaceMockHttp(MockHttpTestCase):
@@ -394,53 +393,53 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_monitoring_zones(self, method, url, body, headers):
+    def _monitoring_zones(self, method, url, body, headers):
         body = self.fixtures.load('monitoring_zones.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_monitoring_zones_mzord(self, method, url, body, headers):
+    def _monitoring_zones_mzord(self, method, url, body, headers):
         body = self.fixtures.load('get_monitoring_zone.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_monitoring_zones_mzxJ4L2IU_traceroute(self, method, url, body,
+    def _monitoring_zones_mzxJ4L2IU_traceroute(self, method, url, body,
                                                      headers):
         body = self.fixtures.load('ex_traceroute.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities(self, method, url, body, headers):
+    def _entities(self, method, url, body, headers):
         body = self.fixtures.load('entities.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_check_types(self, method, url, body, headers):
+    def _check_types(self, method, url, body, headers):
         body = self.fixtures.load('check_types.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_notification_types(self, method, url, body, headers):
+    def _notification_types(self, method, url, body, headers):
         body = self.fixtures.load('notification_types.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_notifications(self, method, url, body, headers):
+    def _notifications(self, method, url, body, headers):
         body = self.fixtures.load('notifications.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_notification_plans(self, method, url, body, headers):
+    def _notification_plans(self, method, url, body, headers):
         body = self.fixtures.load('notification_plans.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_checks(self, method, url, body, headers):
+    def _entities_en8B9YwUn6_checks(self, method, url, body, headers):
         body = self.fixtures.load('checks.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_check_types_agent_disk_targets(self,
+    def _entities_aaaaa_agent_check_types_agent_disk_targets(self,
                                                              method,
                                                              url,
                                                              body,
@@ -449,12 +448,12 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_alarms(self, method, url, body, headers):
+    def _entities_en8B9YwUn6_alarms(self, method, url, body, headers):
         body = self.fixtures.load('alarms.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_notification_history(self,
+    def _entities_en8B9YwUn6_alarms_aldIpNY8t3_notification_history(self,
                                                              method,
                                                              url, body,
                                                              headers):
@@ -462,7 +461,7 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3_notification_history_chhJwYeArX(self,
+    def _entities_en8B9YwUn6_alarms_aldIpNY8t3_notification_history_chhJwYeArX(self,
                                                              method,
                                                              url, body,
                                                              headers):
@@ -470,19 +469,19 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_test_alarm(self, method, url, body,
+    def _entities_en8B9YwUn6_test_alarm(self, method, url, body,
                                               headers):
         body = self.fixtures.load('test_alarm.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_test_check(self, method, url, body,
+    def _entities_en8B9YwUn6_test_check(self, method, url, body,
                                               headers):
         body = self.fixtures.load('test_check.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6(self, method, url, body, headers):
+    def _entities_en8B9YwUn6(self, method, url, body, headers):
         body = ''
         if method == 'DELETE':
             return (httplib.NO_CONTENT, body, self.json_content_headers,
@@ -490,7 +489,7 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_entities_en8Xmk5lv1_CHILDREN_EXIST(self, method, url, body,
+    def _entities_en8Xmk5lv1_CHILDREN_EXIST(self, method, url, body,
                                                   headers):
         if method == 'DELETE':
             body = self.fixtures.load('error_children_exist.json')
@@ -499,7 +498,7 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_entities_en8B9YwUn6_checks_chhJwYeArX(self, method, url, body,
+    def _entities_en8B9YwUn6_checks_chhJwYeArX(self, method, url, body,
                                                      headers):
         if method == 'DELETE':
             body = ''
@@ -508,7 +507,7 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_entities_en8B9YwUn6_alarms_aldIpNY8t3(self, method, url, body,
+    def _entities_en8B9YwUn6_alarms_aldIpNY8t3(self, method, url, body,
                                                      headers):
         if method == 'DELETE':
             body = ''
@@ -517,7 +516,7 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_notifications_ntQVm5IyiR(self, method, url, body, headers):
+    def _notifications_ntQVm5IyiR(self, method, url, body, headers):
         if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
@@ -525,7 +524,7 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_notification_plans_npIXxOAn5(self, method, url, body, headers):
+    def _notification_plans_npIXxOAn5(self, method, url, body, headers):
         if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
@@ -533,115 +532,115 @@ class RackspaceMockHttp(MockHttpTestCase):
 
         raise NotImplementedError('')
 
-    def _23213_agent_tokens_at28OJNsRB(self, method, url, body, headers):
+    def _agent_tokens_at28OJNsRB(self, method, url, body, headers):
         if method == 'DELETE':
             body = ''
             return (httplib.NO_CONTENT, body, self.json_content_headers,
                     httplib.responses[httplib.NO_CONTENT])
 
-    def _23213_agent_tokens(self, method, url, body, headers):
+    def _agent_tokens(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_tokens.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents(self, method, url, body, headers):
+    def _agents(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agents.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_612deec7_1a3d_429f_c2a2_aadc59_connections(self, method, url, body, headers):
+    def _agents_612deec7_1a3d_429f_c2a2_aadc59_connections(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_connections.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_cpus(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_cpus(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_cpus.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_memory(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_memory(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_memory.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_system(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_system(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_system.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_network_interfaces(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_network_interfaces(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_network_interfaces.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_processes(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_processes(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_processes.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_disks(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_disks(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_disks.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_agents_aaaaa_host_info_filesystems(self, method, url, body, headers):
+    def _agents_aaaaa_host_info_filesystems(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_filesystems.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_cpus(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_cpus(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_cpus.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_memory(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_memory(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_memory.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_system(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_system(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_system.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_network_interfaces(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_network_interfaces(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_network_interfaces.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_processes(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_processes(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_processes.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_disks(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_disks(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_disks.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_aaaaa_agent_host_info_filesystems(self, method, url, body, headers):
+    def _entities_aaaaa_agent_host_info_filesystems(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('agent_host_info_filesystems.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
-    def _23213_entities_en8B9YwUn6_checks_chhJwYeArX_metrics(self, method, url, body, headers):
+    def _entities_en8B9YwUn6_checks_chhJwYeArX_metrics(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('metrics.json')
             return (httplib.OK, body, self.json_content_headers,
