@@ -38,9 +38,7 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
-
-API_VERSION = 'v1.0'
-API_URL = 'https://monitoring.api.rackspacecloud.com/%s' % (API_VERSION)
+from libcloud.common.openstack import OpenStackDriverMixin
 
 
 class RackspaceMonitoringValidationError(LibcloudError):
@@ -120,18 +118,20 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
     type = Provider.RACKSPACE
     responseCls = RackspaceMonitoringResponse
     auth_url = AUTH_URL_US
-    _url_key = "monitoring_url"
 
-    def __init__(self, user_id, key, secure=False, ex_force_base_url=API_URL,
-                 ex_force_auth_url=None, ex_force_auth_version='2.0'):
-        self.api_version = API_VERSION
-        self.monitoring_url = ex_force_base_url
+    service_name = 'cloudMonitoring'
+    service_type = 'rax:monitor'
+
+    def __init__(self, user_id, key, secure=False, ex_force_base_url=None,
+                 ex_force_auth_url=None, ex_force_auth_version='2.0',
+                 ex_force_auth_token=None):
         self.accept_format = 'application/json'
         super(RackspaceMonitoringConnection, self).__init__(user_id, key,
                                 secure=secure,
                                 ex_force_base_url=ex_force_base_url,
                                 ex_force_auth_url=ex_force_auth_url,
-                                ex_force_auth_version=ex_force_auth_version)
+                                ex_force_auth_version=ex_force_auth_version,
+                                ex_force_auth_token=ex_force_auth_token)
 
     def request(self, action, params=None, data='', headers=None, method='GET',
                 raw=False):
@@ -154,7 +154,7 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
         )
 
 
-class RackspaceMonitoringDriver(MonitoringDriver):
+class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     """
     Base Rackspace Monitoring driver.
 
@@ -163,29 +163,11 @@ class RackspaceMonitoringDriver(MonitoringDriver):
     connectionCls = RackspaceMonitoringConnection
 
     def __init__(self, *args, **kwargs):
-        self._ex_force_base_url = kwargs.pop('ex_force_base_url', None)
-        self._ex_force_auth_url = kwargs.pop('ex_force_auth_url', None)
-        self._ex_force_auth_version = kwargs.pop('ex_force_auth_version', None)
+        OpenStackDriverMixin.__init__(self, *args, **kwargs)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
-        self.connection._populate_hosts_and_request_paths()
-        ep = self.connection.service_catalog.get_endpoint(name='cloudServers',
-                                               service_type='compute',
-                                               region=None)
-
-        tenant_id = ep['tenantId']
-        self.connection._ex_force_base_url = '%s/%s' % (
-                self.connection._ex_force_base_url, tenant_id)
-
     def _ex_connection_class_kwargs(self):
-        rv = {}
-        if self._ex_force_base_url:
-            rv['ex_force_base_url'] = self._ex_force_base_url
-        if self._ex_force_auth_url:
-            rv['ex_force_auth_url'] = self._ex_force_auth_url
-        if self._ex_force_auth_version:
-            rv['ex_force_auth_version'] = self._ex_force_auth_version
-        return rv
+        return self.openstack_connection_kwargs()
 
     def _get_more(self, last_key, value_dict):
         key = None
