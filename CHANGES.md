@@ -1,4 +1,4 @@
-rackspace-monitoring v0.5.0 - in development
+rackspace-monitoring v0.5.0 - 2013-06-06:
 
 * Use service catalog to determine the API endpoint url.
 * Allow user to specify auth token which is used for authentication by
@@ -8,7 +8,7 @@ Note: if you specify `ex_force_auth_token` you also need to specify
 `ex_force_base_url` which must contain a full url including a tenant id
 (e.g. `https://monitoring.api.rackspacecloud.com:443/v1.0/12345`)
 
-rackspace-monitoring v0.4.0 - 2012-05-30:
+rackspace-monitoring v0.4.0 - 2013-05-30:
 
 * Add fetch_data_point method
 * Add support for entity filtering on alarm changelog lis
