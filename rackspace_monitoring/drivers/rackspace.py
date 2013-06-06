@@ -169,10 +169,18 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         OpenStackDriverMixin.__init__(self, *args, **kwargs)
         super(RackspaceMonitoringDriver, self).__init__(*args, **kwargs)
 
-        # Don't require user to pass in tenant id if specifying a custom api
-        # url
-        ex_force_base_url = kwargs.pop('ex_force_base_url', None)
-        ex_force_auth_token = kwargs.pop('ex_force_auth_token', None)
+        self._initialize_connection_base_url(constructor_kwargs=kwargs)
+
+    def _initialize_connection_base_url(self, constructor_kwargs):
+        # If user specifies a custom API url (ex_force_base_url variable),
+        # don't require him to pass in tenant it and automatically retrieve it
+        # from the service catalog.
+        #
+        # Note: If user specifies both ex_force_base_url and
+        # ex_force_auth_token, ex_force_base_url must contain full URL
+        # including a tenant id.
+        ex_force_base_url = constructor_kwargs.pop('ex_force_base_url', None)
+        ex_force_auth_token = constructor_kwargs.pop('ex_force_auth_token', None)
 
         if ex_force_base_url and not ex_force_auth_token:
             self.connection._populate_hosts_and_request_paths()
