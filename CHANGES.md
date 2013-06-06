@@ -4,6 +4,12 @@ rackspace-monitoring v0.5.0 - in development
 * Allow user to specify auth token which is used for authentication by
   passing ex_force_auth_token variable to the constructor.
 
+rackspace-monitoring v0.4.0 - 2012-05-30:
+
+* Add fetch_data_point method
+* Add support for entity filtering on alarm changelog lis
+* Add create_agent_installer method
+
 rackspace-monitoring v0.3.0 - 2012-07-23:
 
 * Add new agent related methods.
