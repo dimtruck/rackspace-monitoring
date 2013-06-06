@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-
 try:
     import simplejson as json
 except:
@@ -30,11 +28,11 @@ from rackspace_monitoring.utils import to_underscore_separated
 from rackspace_monitoring.utils import value_to_bool
 
 from rackspace_monitoring.base import (MonitoringDriver, Entity,
-                                      NotificationPlan, MonitoringZone,
-                                      Notification, CheckType, Alarm, Check,
-                                      NotificationType, AlarmChangelog,
-                                      LatestAlarmState, Agent, AgentToken,
-                                      AgentConnection, Metric, DataPoint)
+                                       NotificationPlan, MonitoringZone,
+                                       Notification, CheckType, Alarm, Check,
+                                       NotificationType, AlarmChangelog,
+                                       LatestAlarmState, Agent, AgentToken,
+                                       AgentConnection, Metric, DataPoint)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -101,10 +99,10 @@ class RackspaceMonitoringResponse(Response):
         body = self.parse_body()
         if self.status == httplib.BAD_REQUEST:
             error = RackspaceMonitoringValidationError(message=body['message'],
-                                               code=body['code'],
-                                               type=body['type'],
-                                               details=body['details'],
-                                               driver=self.connection.driver)
+                                                       code=body['code'],
+                                                       type=body['type'],
+                                                       details=body['details'],
+                                                   driver=self.connection.driver)
             raise error
 
         return body
@@ -732,7 +730,6 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         return AgentToken(id=agent_token['id'], label=agent_token['label'],
                           token=agent_token['token'])
 
-
     def _get_installer_headers(self, resp):
         return {'shell_url': resp.headers.get('x-shell-installer-location'),
                 'json_url': resp.headers.get('location')}
@@ -744,7 +741,6 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
         return self._create('/agent_installers', data=data,
                           coerce=None, handler=self._get_installer_headers)
-
 
     # Agent
 
