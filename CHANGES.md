@@ -1,4 +1,4 @@
-rackspace-monitoring in development
+rackspace-monitoring v0.5.1 - 2013-06-13:
 
 * Fix a bug with service catalog parsing which would occour when user uses
   `ex_force_base_url` argument with the staging auth endpoint.
