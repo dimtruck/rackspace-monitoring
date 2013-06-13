@@ -184,10 +184,16 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
         if ex_force_base_url and not ex_force_auth_token:
             self.connection._populate_hosts_and_request_paths()
-            ep = self.connection.service_catalog \
-                     .get_endpoint(name=self.connection.service_name,
-                                   service_type=self.connection.service_type,
-                                   region=None)
+            eps = self.connection.service_catalog \
+                      .get_endpoints(name=self.connection.service_name,
+                                     service_type=self.connection.service_type)
+
+            if len(eps) == 0:
+                raise Exception('Service catalog contains no endpoints')
+
+            # Cloud Monitoring only has single endpoint so use a first available
+            # one.
+            ep = eps[0]
 
             tenant_id = ep['tenantId']
             self.connection._ex_force_base_url = '%s/%s' % (
