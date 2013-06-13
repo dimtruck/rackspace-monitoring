@@ -1,3 +1,7 @@
+rackspace-monitoring in development
+
+* Fix service catalog parsing when using `ex_force_base_url` argument.
+
 rackspace-monitoring v0.5.0 - 2013-06-06:
 
 * Use service catalog to determine the API endpoint url.
