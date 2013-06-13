@@ -193,6 +193,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
             # Cloud Monitoring only has single endpoint so use a first available
             # one.
+            # Note: We cannot use "get_endpoint" because the staging auth
+            # catalog entry contains a "region" attribute which we don't know
+            # up front.
             ep = eps[0]
 
             tenant_id = ep['tenantId']
