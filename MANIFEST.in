@@ -1,8 +1,11 @@
 include LICENSE
 include NOTICE
-include CHANGES
-include README
-prune test/secrets.py
+include CHANGES.md
+include README.md
+include requirements.txt
+include tox.ini
+include demo/*/*/*
 include test/*.py
 include test/secrets.py-dist
-include test/fixtures/*/*
+include test/fixtures/*/*/*
+prune test/secrets.py
