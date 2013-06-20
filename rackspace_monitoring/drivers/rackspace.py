@@ -275,7 +275,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
         return rv
 
-    def _create(self, url, data, coerce, handler=None):
+    def _create(self, url, data, coerce, handler=None, headers=None):
         params = {}
 
         for k in data.keys():
@@ -295,7 +295,8 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         resp = self.connection.request(url,
                                        method='POST',
                                        params=params,
-                                       data=data)
+                                       data=data,
+                                       headers=headers)
         if handler is not None:
             return handler(resp)
         elif resp.status == httplib.CREATED:
@@ -307,7 +308,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
-    def _update(self, url, data, kwargs, coerce):
+    def _update(self, url, data, kwargs, coerce, headers=None):
         params = {}
 
         for k in data.keys():
@@ -321,7 +322,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             params['_why'] = kwargs['why']
 
         resp = self.connection.request(url, method='PUT', params=params,
-                                       data=data)
+                                       data=data, headers=headers)
 
         if resp.status == httplib.NO_CONTENT:
             # location
@@ -345,8 +346,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         if 'why' in kwargs and kwargs['why'] is not None:
             params['_why'] = kwargs['why']
 
+        headers = kwargs.get('headers', {})
         resp = self.connection.request(action=url, method='DELETE',
-                                       params=params)
+                                       params=params, headers=headers)
         return resp.status == httplib.NO_CONTENT
 
     def list_check_types(self):
@@ -704,12 +706,14 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                 'label': kwargs.get('label'),
                 'agent_id': kwargs.get('agent_id'),
                 'metadata': kwargs.get('extra', {})}
+        headers = kwargs.get('headers', {})
 
-        return self._create("/entities", data=data, coerce=self.get_entity)
+        return self._create("/entities", data=data, coerce=self.get_entity, headers=headers)
 
     def update_entity(self, entity, data, **kwargs):
         return self._update("/entities/%s" % (entity.id),
-            data=data, kwargs=kwargs, coerce=self.get_entity)
+            data=data, kwargs=kwargs, coerce=self.get_entity,
+            headers=kwargs.get('headers', {}))
 
     def usage(self):
         resp = self.connection.request("/usage")
