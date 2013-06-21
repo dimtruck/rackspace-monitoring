@@ -71,11 +71,11 @@ class Entity(object):
         self.driver = driver
         self.agent_id = agent_id
 
-    def update(self, data):
-        self.driver.update_entity(entity=self, data=data)
+    def update(self, data, **kwargs):
+        self.driver.update_entity(entity=self, data=data, **kwargs)
 
-    def delete(self):
-        return self.driver.delete_entity(self)
+    def delete(self, **kwargs):
+        return self.driver.delete_entity(self, **kwargs)
 
     def __repr__(self):
         return ('<Entity: id=%s label=%s provider=%s ...>' %
