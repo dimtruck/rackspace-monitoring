@@ -1,3 +1,8 @@
+rackspace-monitoring v0.5.2 - 2013-06-21:
+
+* Allow headers to be passed when performing create, delete, and update
+  actions on entities.
+
 rackspace-monitoring v0.5.1 - 2013-06-13:
 
 * Fix a bug with service catalog parsing which would occour when user uses
