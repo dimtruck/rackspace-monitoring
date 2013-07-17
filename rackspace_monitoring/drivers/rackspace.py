@@ -308,7 +308,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         else:
             raise LibcloudError('Unexpected status code: %s' % (resp.status))
 
-    def _update(self, url, data, kwargs, coerce, headers=None):
+    def _update(self, url, data, kwargs, coerce):
         params = {}
 
         for k in data.keys():
@@ -321,6 +321,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         if 'why' in kwargs and kwargs['why'] is not None:
             params['_why'] = kwargs['why']
 
+        headers = kwargs.get('headers', {})
         resp = self.connection.request(url, method='PUT', params=params,
                                        data=data, headers=headers)
 
@@ -473,9 +474,10 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                 'check_id': kwargs.get('check_id'),
                 'criteria': kwargs.get('criteria'),
                 'notification_plan_id': kwargs.get('notification_plan_id')}
+        headers = kwargs.get('headers', {})
 
         return self._create("/entities/%s/alarms" % (entity.id),
-            data=data, coerce=self.get_alarm)
+            data=data, coerce=self.get_alarm, headers=headers)
 
     def test_alarm(self, entity, **kwargs):
         data = {'criteria': kwargs.get('criteria'),
@@ -655,8 +657,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
     def create_check(self, entity, **kwargs):
         data = self._check_kwarg_to_data(kwargs)
+        headers = kwargs.get('headers', {})
         return self._create("/entities/%s/checks" % (entity.id),
-            data=data, coerce=self.get_check)
+            data=data, coerce=self.get_check, headers=headers)
 
     def update_check(self, check, data, **kwargs):
         data = self._check_kwarg_to_data(kwargs=data)
