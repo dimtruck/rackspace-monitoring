@@ -715,8 +715,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
     def update_entity(self, entity, data, **kwargs):
         return self._update("/entities/%s" % (entity.id),
-            data=data, kwargs=kwargs, coerce=self.get_entity,
-            headers=kwargs.get('headers', {}))
+            data=data, kwargs=kwargs, coerce=self.get_entity)
 
     def usage(self):
         resp = self.connection.request("/usage")
