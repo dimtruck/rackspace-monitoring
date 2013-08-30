@@ -702,15 +702,20 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
     def create_entity(self, **kwargs):
-        data = {'who': kwargs.get('who'),
-                'why': kwargs.get('why'),
-                'uri': kwargs.get('uri'),
-                'ip_addresses': kwargs.get('ip_addresses', {}),
-                'label': kwargs.get('label'),
-                'agent_id': kwargs.get('agent_id'),
-                'metadata': kwargs.get('extra', {})}
+        """
+        kwargs expected:
+            'who': kwargs.get('who')
+            'why': kwargs.get('why')
+            'uri': kwargs.get('uri')
+            'ip_addresses': kwargs.get('ip_addresses', {})
+            'label': kwargs.get('label')
+            'agent_id': kwargs.get('agent_id')
+            'metadata': kwargs.get('extra', {})
+        """
+        data = kwargs
         headers = kwargs.get('headers', {})
-
+        if 'headers' in data:
+            del data['headers']
         return self._create("/entities", data=data, coerce=self.get_entity, headers=headers)
 
     def update_entity(self, entity, data, **kwargs):
