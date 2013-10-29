@@ -1,3 +1,7 @@
+rackspace-monitoring v0.5.4 - 2013-10-19:
+
+* Fix for kwargs on entity update.
+
 rackspace-monitoring v0.5.3 - 2013-07-17:
 
 * Allow headers to be passed when performing create, delete, and update
