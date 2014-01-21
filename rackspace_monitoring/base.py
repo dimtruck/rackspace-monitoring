@@ -292,6 +292,31 @@ class AgentConnection(object):
             (self.id, self.agent_id, self.guid)).encode('utf-8')
 
 
+class Suppression(object):
+    def __init__(self, id, notification_plans, checks, alarms,
+                 start_time, end_time, driver):
+        self.id = id
+        self.notification_plans = notification_plans
+        self.checks = checks
+        self.alarms = alarms
+        self.start_time = start_time
+        self.end_time = end_time
+        self.driver = driver
+
+    def update(self, data):
+        self.driver.update_suppression(notification=self, data=data)
+
+    def delete(self):
+        return self.driver.delete_suppression(self)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('<Suppression: id=%s, start_time=%s, end_time=%s>' %
+            (self.id, self.start_time, self.end_time)).encode('utf-8')
+
+
 class MonitoringDriver(object):
     """
     A base MonitoringDriver to derive from.
@@ -359,6 +384,10 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'list_notification_plans not implemented for this driver')
 
+    def list_suppressions(self):
+        raise NotImplementedError(
+            'list_suppressions not implemented for this driver')
+
     def delete_entity(self, entity):
         raise NotImplementedError(
             'delete_entity not implemented for this driver')
@@ -378,6 +407,10 @@ class MonitoringDriver(object):
     def delete_notification_plan(self, notification_plan):
         raise NotImplementedError(
             'delete_notification_plan not implemented for this driver')
+
+    def delete_suppression(self, suppression):
+        raise NotImplementedError(
+            'delete_suppression not implemented for this driver')
 
     def create_check(self, **kwargs):
         raise NotImplementedError(
@@ -399,6 +432,10 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'create_notification_plan not implemented for this driver')
 
+    def create_suppression(self, **kwargs):
+        raise NotImplementedError(
+            'create_suppression not implemented for this driver')
+
     def update_entity(self, entity, data):
         raise NotImplementedError(
             'update_entity not implemented for this driver')
@@ -418,3 +455,7 @@ class MonitoringDriver(object):
     def update_notification_plan(self, notification_plan, data):
         raise NotImplementedError(
             'update_notification_plan not implemented for this driver')
+
+    def update_suppression(self, suppression, data):
+        raise NotImplementedError(
+            'update_suppression not implemented for this driver')

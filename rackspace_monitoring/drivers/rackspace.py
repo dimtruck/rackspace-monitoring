@@ -32,7 +32,8 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                        Notification, CheckType, Alarm, Check,
                                        NotificationType, AlarmChangelog,
                                        LatestAlarmState, Agent, AgentToken,
-                                       AgentConnection, Metric, DataPoint)
+                                       AgentConnection, Metric, DataPoint,
+                                       Suppression)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -249,7 +250,8 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
               'checks': 'check',
               'notifications': 'notification',
               'notification_plans': 'notificationPlan',
-              'tokens': 'token'}
+              'tokens': 'token',
+              'suppressions': 'suppression'}
 
         return kv[name]
 
@@ -486,6 +488,53 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                                        method='POST',
                                        data=data)
         return resp.object
+
+
+    ####################
+    ## Suppressions
+    ####################
+
+    def list_suppressions(self, ex_next_marker=None):
+        value_dict = {'url': '/suppressions',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_suppression}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+    def _to_suppression(self, suppression, value_dict):
+        return Suppression(id=suppression['id'],
+                           notification_plans=suppression['notification_plans'],
+                           checks=suppression['checks'],
+                           alarms=suppression['alarms'],
+                           start_time=suppression['start_time'],
+                           end_time=suppression['end_time'],
+                           driver=self)
+
+    def get_suppression(self, suppression_id):
+        resp = self.connection.request("/suppressions/%s" % (suppression_id))
+
+        return self._to_suppression(resp.object, {})
+
+    def create_suppression(self, **kwargs):
+        data = {'who': kwargs.get('who'),
+                'why': kwargs.get('why'),
+                'notification_plans': kwargs.get('notification_plans'),
+                'alarms': kwargs.get('alarms'),
+                'checks': kwargs.get('checks'),
+                'start_time': kwargs.get('start_time'),
+                'end_time': kwargs.get('end_time')}
+
+        return self._create("/suppressions", data=data,
+                            coerce=self.get_suppression)
+
+    def delete_suppression(self, suppression, **kwargs):
+        return self._delete(url="/suppressions/%s" % (suppression.id),
+                            kwargs=kwargs)
+
+    def update_suppression(self, suppression, data, **kwargs):
+        return self._update('/suppressions/%s' % (suppression.id),
+            data=data, kwargs=kwargs, coerce=self.get_suppression)
+
 
     ####################
     ## Notifications
