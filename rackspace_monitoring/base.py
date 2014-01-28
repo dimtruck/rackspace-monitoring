@@ -293,10 +293,11 @@ class AgentConnection(object):
 
 
 class Suppression(object):
-    def __init__(self, id, notification_plans, checks, alarms,
-                 start_time, end_time, driver):
+    def __init__(self, id, notification_plans, entities,
+                 checks, alarms, start_time, end_time, driver):
         self.id = id
         self.notification_plans = notification_plans
+        self.entities = entities
         self.checks = checks
         self.alarms = alarms
         self.start_time = start_time

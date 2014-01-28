@@ -504,6 +504,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def _to_suppression(self, suppression, value_dict):
         return Suppression(id=suppression['id'],
                            notification_plans=suppression['notification_plans'],
+                           entities=suppression['entities'],
                            checks=suppression['checks'],
                            alarms=suppression['alarms'],
                            start_time=suppression['start_time'],
