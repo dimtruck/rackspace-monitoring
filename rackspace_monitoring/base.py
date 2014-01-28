@@ -317,6 +317,31 @@ class Suppression(object):
             (self.id, self.start_time, self.end_time)).encode('utf-8')
 
 
+class SuppressionLog(object):
+    def __init__(self, id, entity_id, alarm_id, check_id, notification_plan_id,
+            suppressions, state, timestamp, transaction_id, driver):
+        self.id = id
+        self.entity_id = entity_id
+        self.alarm_id = alarm_id
+        self.check_id = check_id
+        self.notification_plan_id = notification_plan_id
+        self.suppressions = suppressions
+        self.state = state
+        self.timestamp = timestamp
+        self.transaction_id = transaction_id
+        self.driver = driver
+
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('<SuppressionLog: id=%s, entity=%s, alarm=%s, check=%s,'
+                'state=%s, timestamp=%s>' %
+            (self.id, self.entity_id, self.alarm_id, self.check_id,
+             self.state, self.timestamp)).encode('utf-8')
+
+
 class MonitoringDriver(object):
     """
     A base MonitoringDriver to derive from.
@@ -387,6 +412,10 @@ class MonitoringDriver(object):
     def list_suppressions(self):
         raise NotImplementedError(
             'list_suppressions not implemented for this driver')
+
+    def list_suppression_logs(self):
+        raise NotImplementedError(
+            'list_suppression_logs not implemented for this driver')
 
     def delete_entity(self, entity):
         raise NotImplementedError(

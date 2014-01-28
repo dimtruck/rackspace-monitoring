@@ -33,7 +33,7 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                        NotificationType, AlarmChangelog,
                                        LatestAlarmState, Agent, AgentToken,
                                        AgentConnection, Metric, DataPoint,
-                                       Suppression)
+                                       Suppression, SuppressionLog)
 
 from libcloud.common.rackspace import AUTH_URL_US
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -510,6 +510,18 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                            end_time=suppression['end_time'],
                            driver=self)
 
+    def _to_suppression_log(self, suppression_log, value_dict):
+        return SuppressionLog(id=suppression_log['id'],
+                              entity_id=suppression_log['entity_id'],
+                              alarm_id=suppression_log['alarm_id'],
+                              check_id=suppression_log['check_id'],
+                              notification_plan_id=suppression_log['notification_plan_id'],
+                              suppressions=suppression_log['suppressions'],
+                              state=suppression_log['state'],
+                              timestamp=suppression_log['timestamp'],
+                              transaction_id=suppression_log['transaction_id'],
+                              driver=self)
+
     def get_suppression(self, suppression_id):
         resp = self.connection.request("/suppressions/%s" % (suppression_id))
 
@@ -534,6 +546,14 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def update_suppression(self, suppression, data, **kwargs):
         return self._update('/suppressions/%s' % (suppression.id),
             data=data, kwargs=kwargs, coerce=self.get_suppression)
+
+    def list_suppression_logs(self, ex_next_marker=None):
+        value_dict = {'url': '/suppression_logs',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_suppression_log}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
 
 
     ####################
