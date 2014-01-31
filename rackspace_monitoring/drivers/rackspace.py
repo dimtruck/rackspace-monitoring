@@ -531,6 +531,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def create_suppression(self, **kwargs):
         data = {'who': kwargs.get('who'),
                 'why': kwargs.get('why'),
+                'entities': kwargs.get('entities'),
                 'notification_plans': kwargs.get('notification_plans'),
                 'alarms': kwargs.get('alarms'),
                 'checks': kwargs.get('checks'),
