@@ -961,6 +961,14 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def ex_views_metric_list(self, ex_next_marker=None):
+        value_dict = {'url': '/views/metric_list',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_metric_list_obj}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
+
     def ex_traceroute(self, monitoring_zone, target, target_resolver='IPv4'):
         data = {'target': target, 'target_resolver': target_resolver}
         path = '/monitoring_zones/%s/traceroute' % (monitoring_zone.id)
@@ -975,6 +983,11 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def _to_agent_host_info_overview_obj(self, data, value_dict):
         return {'agent_id': data['agent_id'],
                 'host_info': data['host_info']}
+
+    def _to_metric_list_obj(self, data, valule_dict):
+        obj = json.dumps(data)
+        return obj;
+
 
     def _to_overview_obj(self, data, value_dict):
         entity = self._to_entity(data['entity'], {})
