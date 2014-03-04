@@ -307,6 +307,10 @@ class RackspaceTests(unittest.TestCase):
         notification_plan = self.driver.list_notification_plans()[0]
         notification_plan.delete()
 
+    def test_views_metric_list(self):
+        metric_list = self.driver.ex_views_metric_list()
+        self.assertTrue(len(metric_list) > 0)
+
     def test_list_agent_tokens(self):
         tokens = self.driver.list_agent_tokens()
         fixture = RackspaceMockHttp.fixtures.load('agent_tokens.json')
@@ -673,6 +677,12 @@ class RackspaceMockHttp(MockHttpTestCase):
     def _v1_0_23213_entities_en8B9YwUn6_checks_chhJwYeArX_metrics(self, method, url, body, headers):
         if method == 'GET':
             body = self.fixtures.load('metrics.json')
+            return (httplib.OK, body, self.json_content_headers,
+                    httplib.responses[httplib.OK])
+
+    def _v1_0_23213_views_metric_list(self, method, url, body, headers):
+        if method == 'GET':
+            body = self.fixtures.load('views_metric_list.json')
             return (httplib.OK, body, self.json_content_headers,
                     httplib.responses[httplib.OK])
 
