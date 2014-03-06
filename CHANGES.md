@@ -1,3 +1,7 @@
+rackspace-monitoring v0.6.0 - 2014-3-6:
+
+* Add support for suppressions
+
 rackspace-monitoring v0.5.4 - 2013-10-19:
 
 * Fix for kwargs on entity update.
