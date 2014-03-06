@@ -83,11 +83,13 @@ class Entity(object):
 
 
 class Notification(object):
-    def __init__(self, id, label, type, details, driver=None):
+    def __init__(self, id, label, type, details,
+                 driver=None,  metadata=None):
         self.id = id
         self.label = label
         self.type = type
         self.details = details
+        self.metadata = metadata
         self.driver = driver
 
     def update(self, data):
@@ -106,12 +108,13 @@ class NotificationPlan(object):
     Represents a notification plan.
     """
     def __init__(self, id, label, driver, critical_state=None,
-                 warning_state=None, ok_state=None):
+                 warning_state=None, ok_state=None, metadata=None):
         self.id = id
         self.label = label
         self.critical_state = critical_state
         self.warning_state = warning_state
         self.ok_state = ok_state
+        self.metadata = metadata
         self.driver = driver
 
     def update(self, data):
@@ -164,7 +167,7 @@ class NotificationType(object):
 
 class Alarm(object):
     def __init__(self, id, check_id, criteria, driver, entity_id, label=None,
-                 notification_plan_id=None):
+                 notification_plan_id=None, confd_name=None, confd_hash=None, metadata=None):
         self.id = id
         self.check_id = check_id
         self.criteria = criteria
@@ -172,6 +175,9 @@ class Alarm(object):
         self.notification_plan_id = notification_plan_id
         self.label = label
         self.entity_id = entity_id
+        self.confd_name = confd_name
+        self.confd_hash = confd_hash
+        self.metadata = metadata
 
     def update(self, data):
         self.driver.update_alarm(alarm=self, data=data)
@@ -186,7 +192,7 @@ class Alarm(object):
 class Check(object):
     def __init__(self, id, label, timeout, period, monitoring_zones,
                  target_alias, target_resolver, type, details,
-                 entity_id, disabled, driver):
+                 entity_id, disabled, driver, confd_name=None, confd_hash=None, metadata=None):
         self.id = id
         self.label = label
         self.timeout = timeout
@@ -198,6 +204,9 @@ class Check(object):
         self.details = details
         self.entity_id = entity_id
         self.disabled = disabled
+        self.confd_name = confd_name
+        self.confd_hash = confd_hash
+        self.metadata = metadata
         self.driver = driver
 
     def update(self, data):
