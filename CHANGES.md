@@ -1,3 +1,9 @@
+rackspace-monitoring v0.6.1 - 2014-3-7:
+
+* Add support for metadata in checks, notifications, and notification
+  plans
+* Display file-based config information when available
+
 rackspace-monitoring v0.6.0 - 2014-3-6:
 
 * Add support for suppressions
