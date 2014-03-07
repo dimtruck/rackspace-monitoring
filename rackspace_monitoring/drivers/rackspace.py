@@ -424,6 +424,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def _to_alarm(self, alarm, value_dict):
         return Alarm(id=alarm['id'], check_id=alarm['check_id'],
             criteria=alarm['criteria'],
+            metadata=alarm.get('metadata'),
+            confd_name=alarm.get('confd_name'),
+            confd_hash=alarm.get('confd_hash'),
             notification_plan_id=alarm.get('notification_plan_id', None), label=alarm.get('label', None),
             driver=self, entity_id=value_dict['entity_id'])
 
@@ -572,7 +575,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def _to_notification(self, notification, value_dict):
         return Notification(id=notification['id'], label=notification['label'],
                             type=notification['type'],
-                            details=notification['details'], driver=self)
+                            details=notification['details'],
+                            metadata=notification.get('metadata'),
+                            driver=self)
 
     def get_notification(self, notification_id):
         resp = self.connection.request("/notifications/%s" % (notification_id))
@@ -621,6 +626,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         ok_state = notification_plan.get('ok_state', [])
         return NotificationPlan(id=notification_plan['id'],
             label=notification_plan['label'],
+            metadata=notification_plan.get('metadata'),
             critical_state=critical_state, warning_state=warning_state,
             ok_state=ok_state, driver=self)
 
@@ -678,6 +684,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             'details': obj.get('details', {}),
             'disabled': value_to_bool(obj.get('disabled', '0')),
             'driver': self,
+            'confd_name': obj.get('confd_name'),
+            'confd_hash': obj.get('confd_hash'),
+            'metadata': obj.get('metadata'),
             'entity_id': value_dict['entity_id']})
 
     def list_checks(self, entity, ex_next_marker=None):
@@ -699,6 +708,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                 'type': kwargs.get('type'),
                 'disabled': kwargs.get('disabled', None),
                 'details': kwargs.get('details'),
+                'metadata': kwargs.get('metadata'),
                 }
 
         if 'period' in kwargs:
