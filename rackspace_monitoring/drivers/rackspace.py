@@ -958,6 +958,13 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def ex_views_metric_list(self, ex_next_marker=None):
+        value_dict = {'url': '/views/metric_list',
+                      'start_marker': ex_next_marker,
+                      'list_item_mapper': self._to_metric_list_obj}
+
+        return LazyList(get_more=self._get_more, value_dict=value_dict)
+
     def ex_views_agent_host_info(self, agentIds, includes, ex_next_marker=None):
         value_dict = {'url': '/views/agent_host_info',
                       'start_marker': ex_next_marker,
@@ -985,6 +992,19 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     def _to_agent_host_info_overview_obj(self, data, value_dict):
         return {'agent_id': data['agent_id'],
                 'host_info': data['host_info']}
+
+    def _to_metric_list_obj(self, data, value_dict):
+        obj = {}
+        obj['entity_id'] = data['entity_id']
+        obj['entity_label'] = data['entity_label']
+        obj['checks'] = []
+
+        for ch in data['checks']:
+            for metric in ch['metrics']:
+                m = self._to_metrics(metric)
+                obj['checks'].append(m)
+
+        return obj
 
     def _to_overview_obj(self, data, value_dict):
         entity = self._to_entity(data['entity'], {})
