@@ -427,6 +427,11 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
+    def _v2_0_tokens_CHILDREN_EXIST(self, method, url, body, headers):
+        body = self.auth_fixtures.load('_v2_0_tokens.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
     def _v1_0_23213_monitoring_zones(self, method, url, body, headers):
         body = self.fixtures.load('monitoring_zones.json')
         return (httplib.OK, body, self.json_content_headers,

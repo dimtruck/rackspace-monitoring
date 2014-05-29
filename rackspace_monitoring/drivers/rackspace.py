@@ -35,7 +35,7 @@ from rackspace_monitoring.base import (MonitoringDriver, Entity,
                                        AgentConnection, Metric, DataPoint,
                                        Suppression, SuppressionLog)
 
-from libcloud.common.rackspace import AUTH_URL_US
+from libcloud.common.rackspace import AUTH_URL
 from libcloud.common.openstack import OpenStackBaseConnection
 from libcloud.common.openstack import OpenStackDriverMixin
 
@@ -116,13 +116,13 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
 
     type = Provider.RACKSPACE
     responseCls = RackspaceMonitoringResponse
-    auth_url = AUTH_URL_US
+    auth_url = AUTH_URL
 
     service_name = 'cloudMonitoring'
     service_type = 'rax:monitor'
 
     def __init__(self, user_id, key, secure=False, ex_force_base_url=None,
-                 ex_force_auth_url=None, ex_force_auth_version='2.0',
+                 ex_force_auth_url=auth_url, ex_force_auth_version='2.0',
                  ex_force_auth_token=None):
         self.accept_format = 'application/json'
         super(RackspaceMonitoringConnection, self).__init__(user_id, key,
