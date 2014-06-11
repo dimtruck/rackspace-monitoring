@@ -122,7 +122,7 @@ class RackspaceMonitoringConnection(OpenStackBaseConnection):
     service_type = 'rax:monitor'
 
     def __init__(self, user_id, key, secure=False, ex_force_base_url=None,
-                 ex_force_auth_url=auth_url, ex_force_auth_version='2.0',
+                 ex_force_auth_url=auth_url, ex_force_auth_version='2.0_apikey',
                  ex_force_auth_token=None):
         self.accept_format = 'application/json'
         super(RackspaceMonitoringConnection, self).__init__(user_id, key,
