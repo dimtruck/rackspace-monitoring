@@ -894,6 +894,11 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    def get_agent_host_info_types(self, agent_id):
+        url = "/agents/%s/host_info_types" % (agent_id)
+        resp = self.connection.request(url)
+        return resp.object
+
     def get_agent_host_info(self, agent_id, info_type):
         url = "/agents/%s/host_info/%s" % (agent_id, info_type)
         resp = self.connection.request(url)
