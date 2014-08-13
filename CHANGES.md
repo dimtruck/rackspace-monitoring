@@ -1,3 +1,7 @@
+rackspace-monitoring v0.6.4 - 2014-8-13:
+
+* Add support for host_info_type request
+
 rackspace-monitoring v0.6.1 - 2014-3-7:
 
 * Add support for metadata in checks, notifications, and notification
