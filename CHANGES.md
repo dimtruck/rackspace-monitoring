@@ -1,3 +1,7 @@
+rackspace-monitoring v0.6.5 - 2014-12-29:
+
+* Limit libcloud version to >= 0.14 & < 0.16
+
 rackspace-monitoring v0.6.4 - 2014-8-13:
 
 * Add support for host_info_type request
