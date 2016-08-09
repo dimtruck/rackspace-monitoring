@@ -171,7 +171,7 @@ setup(
     description='Client library for Rackspace Cloud Monitoring',
     author='Rackspace, Inc.',
     author_email='monitoring@rackspace.com',
-    install_requires=['apache-libcloud >= 0.14, <0.16'],
+    install_requires=['apache-libcloud >= 0.17'],
     packages=[
         'rackspace_monitoring',
         'rackspace_monitoring.drivers',

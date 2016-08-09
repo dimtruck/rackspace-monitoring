@@ -183,7 +183,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         ex_force_base_url = constructor_kwargs.pop('ex_force_base_url', None)
         ex_force_auth_token = constructor_kwargs.pop('ex_force_auth_token', None)
 
-        if ex_force_base_url and not ex_force_auth_token:
+        if not ex_force_auth_token:
             self.connection._populate_hosts_and_request_paths()
             eps = self.connection.service_catalog \
                       .get_endpoints(name=self.connection.service_name,
@@ -199,9 +199,20 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             # up front.
             ep = eps[0]
 
-            tenant_id = ep['tenantId']
-            self.connection._ex_force_base_url = '%s/%s' % (
-            self.connection._ex_force_base_url, tenant_id)
+            # dimtruck (8/9/16): tenant retrieval can no longer be done from
+            # the openstack endpoint.  We can still get the tenant from the
+            # catalog url.  It's the last entry.
+            
+            if ex_force_base_url:
+                # dimtruck (8/9/16): this is a custom url.  Append tenant to it
+                tenant_id = ep.url.rsplit('/', 1)[-1]
+                
+                self.connection._ex_force_base_url = '%s/%s' % (
+                self.connection._ex_force_base_url, tenant_id)
+            else:
+                # dimtruck (8/9/16): no custom url provided.  Just use
+                # service catalog url
+                self.connection._ex_force_base_url = ep.url
 
     def _ex_connection_class_kwargs(self):
         return self.openstack_connection_kwargs()
