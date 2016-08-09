@@ -414,7 +414,8 @@ class RackspaceTests(unittest.TestCase):
         driver = RackspaceMonitoringDriver(key=RACKSPACE_PARAMS[0],
                                            secret=RACKSPACE_PARAMS[1])
         driver.list_entities()
-        self.assertEqual(driver.connection._ex_force_base_url, None)
+        self.assertEqual(driver.connection._ex_force_base_url,
+                         'https://monitoring.api.rackspacecloud.com/v1.0/23213')
 
 
 class RackspaceMockHttp(MockHttpTestCase):
