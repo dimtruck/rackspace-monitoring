@@ -55,9 +55,8 @@ class RackspaceTests(unittest.TestCase):
 
     def test_list_monitoring_zones(self):
         result = list(self.driver.list_monitoring_zones())
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result), 1)
         self.assertEqual(result[0].id, 'mzxJ4L2IU')
-        self.assertEqual(result[1].id, 'pzdhaalpC2')
 
     def test_list_entities(self):
         result = list(self.driver.list_entities())
@@ -313,7 +312,7 @@ class RackspaceTests(unittest.TestCase):
         self.assertTrue(len(metric_list) > 0)
 
     def test_delete_monitoring_zone_success(self):
-        monitoring_zone = self.driver.list_monitoring_zones()[1]
+        monitoring_zone = self.driver.get_monitoring_zone(monitoring_zone_id='pzdhaalpC2')
         result = self.driver.delete_monitoring_zone(monitoring_zone=monitoring_zone)
         self.assertTrue(result)
 
