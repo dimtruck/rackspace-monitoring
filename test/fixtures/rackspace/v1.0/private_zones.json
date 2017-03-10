@@ -1,0 +1,20 @@
+{
+    "values": [
+        {
+            "id": "pzdhaalpC2",
+            "label": "label1",
+            "maximum_checks": 500,
+            "maximum_agents": 500,
+            "disabled": false,
+            "metadata": {},
+            "created_at": 1488900343971,
+            "updated_at": 1489134156152
+        }
+    ],
+    "metadata": {
+        "count": 1,
+        "limit": 100,
+        "marker": null,
+        "next_href": null
+    }
+}

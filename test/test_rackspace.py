@@ -444,6 +444,11 @@ class RackspaceMockHttp(MockHttpTestCase):
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
+    def _v1_0_23213_private_zones(self, method, url, body, headers):
+        body = self.fixtures.load('private_zones.json')
+        return (httplib.OK, body, self.json_content_headers,
+                httplib.responses[httplib.OK])
+
     def _v1_0_23213_monitoring_zones_mzord(self, method, url, body, headers):
         body = self.fixtures.load('get_monitoring_zone.json')
         return (httplib.OK, body, self.json_content_headers,
