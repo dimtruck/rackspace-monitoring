@@ -38,6 +38,27 @@ class MonitoringZone(object):
                 (self.id, self.label, self.driver.name)).encode('utf-8')
 
 
+class PrivateZone(object):
+    """
+    Represents a private zone from where the entities are monitored.
+    """
+
+    def __init__(self, id, label, maximum_checks, maximum_agents, disabled, metadata, driver,
+                 extra=None):
+        self.id = id
+        self.label = label
+        self.maximum_checks = maximum_checks
+        self.maximum_agents = maximum_agents
+        self.disabled = disabled
+        self.metadata = metadata
+        self.driver = driver
+        self.extra = extra or {}
+
+    def __repr__(self):
+        return ('<PrivateZone: id=%s label=%s provider=%s ...>' %
+                (self.id, self.label, self.driver.name)).encode('utf-8')
+
+
 class Entity(object):
     """
     Represents an entity to be monitored.
@@ -427,6 +448,10 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'list_suppression_logs not implemented for this driver')
 
+    def delete_monitoring_zone(self, monitoring_zone):
+        raise NotImplementedError(
+            'delete_monitoring_zone not implemented for this driver')
+
     def delete_entity(self, entity):
         raise NotImplementedError(
             'delete_entity not implemented for this driver')
@@ -463,6 +488,10 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'create_entity not implemented for this driver')
 
+    def create_monitoring_zone(self, **kwargs):
+        raise NotImplementedError(
+            'create_monitoring_zone not implemented for this driver')
+
     def create_notification(self, **kwargs):
         raise NotImplementedError(
             'create_notification not implemented for this driver')
@@ -474,6 +503,10 @@ class MonitoringDriver(object):
     def create_suppression(self, **kwargs):
         raise NotImplementedError(
             'create_suppression not implemented for this driver')
+
+    def update_monitoring_zone(self, monitoring_zone, data):
+        raise NotImplementedError(
+            'update_monitoring_zone not implemented for this driver')
 
     def update_entity(self, entity, data):
         raise NotImplementedError(
