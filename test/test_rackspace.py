@@ -311,11 +311,6 @@ class RackspaceTests(unittest.TestCase):
         metric_list = self.driver.ex_views_metric_list()
         self.assertTrue(len(metric_list) > 0)
 
-    def test_delete_monitoring_zone_success(self):
-        monitoring_zone = self.driver.get_monitoring_zone(monitoring_zone_id='pzdhaalpC2')
-        result = self.driver.delete_monitoring_zone(monitoring_zone=monitoring_zone)
-        self.assertTrue(result)
-
     def test_list_agent_tokens(self):
         tokens = self.driver.list_agent_tokens()
         fixture = RackspaceMockHttp.fixtures.load('agent_tokens.json')
@@ -440,11 +435,6 @@ class RackspaceMockHttp(MockHttpTestCase):
 
     def _v1_0_23213_monitoring_zones(self, method, url, body, headers):
         body = self.fixtures.load('monitoring_zones.json')
-        return (httplib.OK, body, self.json_content_headers,
-                httplib.responses[httplib.OK])
-
-    def _v1_0_23213_private_zones(self, method, url, body, headers):
-        body = self.fixtures.load('private_zones.json')
         return (httplib.OK, body, self.json_content_headers,
                 httplib.responses[httplib.OK])
 
