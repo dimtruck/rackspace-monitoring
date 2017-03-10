@@ -406,11 +406,16 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                       'list_item_mapper': self._to_datapoints}
         return LazyList(get_more=self._get_more, value_dict=value_dict)
 
+    ####################
+    ## Monitoring Zones
+    ####################
 
     def _to_monitoring_zone(self, obj, value_dict=None):
         return MonitoringZone(id=obj['id'], label=obj['label'],
                               country_code=obj['country_code'],
                               source_ips=obj['source_ips'],
+                              maximum_checks=obj['maximum_checks'],
+                              maximum_agents=obj['maximum_agents'],
                               driver=self)
 
     def list_monitoring_zones(self):
@@ -422,6 +427,24 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
         url = '/monitoring_zones/%s' % (monitoring_zone_id)
         resp = self.connection.request(url).object
         return self._to_monitoring_zone(obj=resp)
+
+    def delete_monitoring_zone(self, monitoring_zone, **kwargs):
+        return self._delete(url="/monitoring_zones/%s" % (monitoring_zone.id),
+                            kwargs=kwargs)
+
+    def update_monitoring_zone(self, monitoring_zone, data, **kwargs):
+        return self._update("/monitoring_zones/%s" % (monitoring_zone.id),
+            data=data, kwargs=kwargs, coerce=self.get_alarm)
+
+    def create_monitoring_zone(self, **kwargs):
+        data = {'who': kwargs.get('who'),
+                'why': kwargs.get('why'),
+                'label': kwargs.get('label'),
+                'maximum_checks': kwargs.get('maximum_checks'),
+                'maximum_agents': kwargs.get('maximum_agents')}
+        headers = kwargs.get('headers', {})
+
+        return self._create("/monitoring_zones", data=data, coerce=self.get_monitoring_zone, headers=headers)
 
     ##########
     ## Alarms
