@@ -28,7 +28,7 @@ from rackspace_monitoring.utils import to_underscore_separated
 from rackspace_monitoring.utils import value_to_bool
 
 from rackspace_monitoring.base import (MonitoringDriver, Entity,
-                                       NotificationPlan, MonitoringZone,
+                                       NotificationPlan, MonitoringZone, PrivateZone,
                                        Notification, CheckType, Alarm, Check,
                                        NotificationType, AlarmChangelog,
                                        LatestAlarmState, Agent, AgentToken,
@@ -254,7 +254,8 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                             (response.status, value_dict['url'], details))
 
     def _plural_to_singular(self, name):
-        kv = {'entities': 'entity',
+        kv = {'private_monitoring_zones': 'monitoring_zone',
+              'entities': 'entity',
               'agent_tokens': 'agent_token',
               'agents': 'agent',
               'alarms': 'alarm',
@@ -411,11 +412,18 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
     ####################
 
     def _to_monitoring_zone(self, obj, value_dict=None):
-        return MonitoringZone(id=obj['id'], label=obj['label'],
-                              country_code=obj['country_code'],
-                              source_ips=obj['source_ips'],
+
+        if ( obj['id'].startswith('mz') ):
+            return MonitoringZone(id=obj['id'], label=obj['label'],
+                                  country_code=obj['country_code'],
+                                  source_ips=obj['source_ips'],
+                                  driver=self)
+
+        return PrivateZone(id=obj['id'], label=obj['label'],
                               maximum_checks=obj['maximum_checks'],
                               maximum_agents=obj['maximum_agents'],
+                              disabled=obj['disabled'],
+                              metadata=obj['metadata'],
                               driver=self)
 
     def list_monitoring_zones(self):
@@ -434,7 +442,7 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
 
     def update_monitoring_zone(self, monitoring_zone, data, **kwargs):
         return self._update("/monitoring_zones/%s" % (monitoring_zone.id),
-            data=data, kwargs=kwargs, coerce=self.get_alarm)
+            data=data, kwargs=kwargs, coerce=self.get_monitoring_zone)
 
     def create_monitoring_zone(self, **kwargs):
         data = {'who': kwargs.get('who'),

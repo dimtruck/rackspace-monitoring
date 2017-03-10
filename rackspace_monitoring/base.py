@@ -24,19 +24,38 @@ class MonitoringZone(object):
     Represents a location from where the entities are monitored.
     """
 
-    def __init__(self, id, label, country_code, source_ips, maximum_checks, maximum_agents, driver,
+    def __init__(self, id, label, country_code, source_ips, driver,
                  extra=None):
         self.id = id
         self.label = label
         self.country_code = country_code
         self.source_ips = source_ips
-        self.maximum_checks = maximum_checks
-        self.maximum_agents = maximum_agents
         self.driver = driver
         self.extra = extra or {}
 
     def __repr__(self):
         return ('<MonitoringZone: id=%s label=%s provider=%s ...>' %
+                (self.id, self.label, self.driver.name)).encode('utf-8')
+
+
+class PrivateZone(object):
+    """
+    Represents a private zone from where the entities are monitored.
+    """
+
+    def __init__(self, id, label, maximum_checks, maximum_agents, disabled, metadata, driver,
+                 extra=None):
+        self.id = id
+        self.label = label
+        self.maximum_checks = maximum_checks
+        self.maximum_agents = maximum_agents
+        self.disabled = disabled
+        self.metadata = metadata
+        self.driver = driver
+        self.extra = extra or {}
+
+    def __repr__(self):
+        return ('<PrivateZone: id=%s label=%s provider=%s ...>' %
                 (self.id, self.label, self.driver.name)).encode('utf-8')
 
 
@@ -485,7 +504,7 @@ class MonitoringDriver(object):
         raise NotImplementedError(
             'create_suppression not implemented for this driver')
 
-    def update_monitoring_zone(self, zone, data):
+    def update_monitoring_zone(self, monitoring_zone, data):
         raise NotImplementedError(
             'update_monitoring_zone not implemented for this driver')
 

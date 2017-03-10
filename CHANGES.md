@@ -1,3 +1,7 @@
+rackspace-monitoring v0.6.6 - 2017-03-11:
+
+* Add support for monitoring zones CRUD operations
+
 rackspace-monitoring v0.6.5 - 2014-12-29:
 
 * Limit libcloud version to >= 0.14 & < 0.16

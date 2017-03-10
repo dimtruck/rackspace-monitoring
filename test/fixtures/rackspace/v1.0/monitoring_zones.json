@@ -7,6 +7,16 @@
             "source_ips": [
                 "127.0.0.1"
             ]
+        },
+         {
+            "id": "pzdhaalpC2",
+            "label": "label1",
+            "maximum_checks": 500,
+            "maximum_agents": 500,
+            "disabled": false,
+            "metadata": {},
+            "created_at": 1488900343971,
+            "updated_at": 1489134156152
         }
     ],
     "metadata": {
