@@ -1,3 +1,7 @@
+rackspace-monitoring v0.7.2 - 2017-06-01:
+
+* Pin the correct libcloud version
+
 rackspace-monitoring v0.7.1 - 2017-03-10:
 
 * Add support for monitoring zones CRUD operations
