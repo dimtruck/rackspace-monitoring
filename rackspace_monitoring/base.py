@@ -64,7 +64,8 @@ class Entity(object):
     Represents an entity to be monitored.
     """
 
-    def __init__(self, id, label, ip_addresses, uri, driver, agent_id=None, extra=None):
+    def __init__(self, id, label, ip_addresses, uri, driver, agent_id=None,
+            extra=None, active_suppressions=None, scheduled_suppressions=None):
         """
         @type label: C{str}
         @param label: Object label (must be unique per container).
@@ -91,6 +92,8 @@ class Entity(object):
         self.ip_addresses = ip_addresses or []
         self.driver = driver
         self.agent_id = agent_id
+        self.active_suppressions = active_suppressions or []
+        self.scheduled_suppressions = scheduled_suppressions or []
 
     def update(self, data, **kwargs):
         self.driver.update_entity(entity=self, data=data, **kwargs)
@@ -188,7 +191,8 @@ class NotificationType(object):
 
 class Alarm(object):
     def __init__(self, id, check_id, criteria, driver, entity_id, label=None,
-                 notification_plan_id=None, confd_name=None, confd_hash=None, metadata=None):
+                 notification_plan_id=None, confd_name=None, confd_hash=None, metadata=None,
+                 active_suppressions=None, scheduled_suppressions=None):
         self.id = id
         self.check_id = check_id
         self.criteria = criteria
@@ -199,6 +203,8 @@ class Alarm(object):
         self.confd_name = confd_name
         self.confd_hash = confd_hash
         self.metadata = metadata
+        self.active_suppressions = active_suppressions or []
+        self.scheduled_suppressions = scheduled_suppressions or []
 
     def update(self, data):
         self.driver.update_alarm(alarm=self, data=data)
@@ -213,7 +219,8 @@ class Alarm(object):
 class Check(object):
     def __init__(self, id, label, timeout, period, monitoring_zones,
                  target_alias, target_resolver, type, details,
-                 entity_id, disabled, driver, confd_name=None, confd_hash=None, metadata=None):
+                 entity_id, disabled, driver, confd_name=None, confd_hash=None, metadata=None,
+                 active_suppressions=None, scheduled_suppressions=None):
         self.id = id
         self.label = label
         self.timeout = timeout
@@ -229,6 +236,8 @@ class Check(object):
         self.confd_hash = confd_hash
         self.metadata = metadata
         self.driver = driver
+        self.active_suppressions = active_suppressions or []
+        self.scheduled_suppressions = scheduled_suppressions or []
 
     def update(self, data):
         self.driver.update_check(check=self, data=data)

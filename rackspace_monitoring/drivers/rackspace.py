@@ -202,11 +202,11 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             # dimtruck (8/9/16): tenant retrieval can no longer be done from
             # the openstack endpoint.  We can still get the tenant from the
             # catalog url.  It's the last entry.
-            
+
             if ex_force_base_url:
                 # dimtruck (8/9/16): this is a custom url.  Append tenant to it
                 tenant_id = ep.url.rsplit('/', 1)[-1]
-                
+
                 self.connection._ex_force_base_url = '%s/%s' % (
                 self.connection._ex_force_base_url, tenant_id)
             else:
@@ -305,7 +305,6 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             if data['why'] is not None:
                 params['_why'] = data['why']
             del data['why']
-
         resp = self.connection.request(url,
                                        method='POST',
                                        params=params,
@@ -469,8 +468,11 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             metadata=alarm.get('metadata'),
             confd_name=alarm.get('confd_name'),
             confd_hash=alarm.get('confd_hash'),
-            notification_plan_id=alarm.get('notification_plan_id', None), label=alarm.get('label', None),
-            driver=self, entity_id=value_dict['entity_id'])
+            notification_plan_id=alarm.get('notification_plan_id', None),
+            label=alarm.get('label', None),
+            driver=self, entity_id=value_dict['entity_id'],
+            active_suppressions = alarm.get('active_suppressions'),
+            scheduled_suppressions = alarm.get('scheduled_suppressions'))
 
     def list_alarms(self, entity, ex_next_marker=None):
         value_dict = {'url': '/entities/%s/alarms' % (entity.id),
@@ -729,7 +731,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
             'confd_name': obj.get('confd_name'),
             'confd_hash': obj.get('confd_hash'),
             'metadata': obj.get('metadata'),
-            'entity_id': value_dict['entity_id']})
+            'entity_id': value_dict['entity_id'],
+            'active_suppressions': obj.get('active_suppressions'),
+            'scheduled_suppressions': obj.get('scheduled_suppressions')})
 
     def list_checks(self, entity, ex_next_marker=None):
         value_dict = {'url': "/entities/%s/checks" % (entity.id),
@@ -811,7 +815,9 @@ class RackspaceMonitoringDriver(MonitoringDriver, OpenStackDriverMixin):
                 ips.append((key, ipaddrs[key]))
         return Entity(id=entity['id'], label=entity['label'], uri=entity.get('uri', None),
                       extra=entity['metadata'], agent_id=entity.get('agent_id', None),
-                      driver=self, ip_addresses=ips)
+                      driver=self, ip_addresses=ips,
+                      scheduled_suppressions=entity['scheduled_suppressions'],
+                      active_suppressions=entity['active_suppressions'])
 
     def delete_entity(self, entity, **kwargs):
         return self._delete(url="/entities/%s" % (entity.id),
