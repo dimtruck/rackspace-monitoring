@@ -5,7 +5,9 @@
             "check_id": "chhJwYeArX",
             "criteria": "if (metric['status'] == 404) { return CRITICAL }",
             "label": "Status code",
-            "notification_plan_id": "npIXxOAn5"
+            "notification_plan_id": "npIXxOAn5",
+            "active_suppressions": [],
+            "scheduled_suppressions": []
         }
     ],
     "metadata": {
